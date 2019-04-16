@@ -1,0 +1,366 @@
+
+$(function () {
+
+    window.basket = {
+        status: 0,
+        getData: function (white_list_id) {
+            var basket = JSON.parse(localStorage.getItem('basket'));
+            if (basket == null) {
+                return  [];
+            } else {
+                if (white_list_id === undefined) {
+                    return basket;
+                } else {
+                    var basket_data = [];
+                    $.each(basket, function (index, el) {
+                        console.log(el);
+                        if (white_list_id.join(',').indexOf(el.id+', '+el.unit_id) >= 0) {
+                            basket_data.push(el);
+                        }
+                    });
+                    return basket_data;
+                }
+
+            }
+
+        },
+        getAllId: function () {
+            var basket = JSON.parse(localStorage.getItem('basket'));
+            if (basket == null) {
+                return  [];
+            } else {
+
+                var id_items = '';
+                $.each(basket, function (i, el) {
+                    if (i != 0) {
+                        id_items += ',' + el['id'];
+                    } else {
+                        id_items += el['id'];
+                    }
+                });
+                return id_items.trim();
+            }
+
+        },
+
+        saveData: function (data) {
+            try {
+                localStorage.setItem('basket', JSON.stringify(data));
+            } catch (e) {
+                if (e == QUOTA_EXCEEDED_ERR) {
+                    alert('Ошибка добавления товара в корзину');
+                }
+            }
+        },
+        addItem: function (item) {
+            var basket_data = this.getData();
+            // смотрим нет ли такой позиции
+            var ifExist = false;
+            $.each(basket_data, function (index, element) {
+                if (element.id == item.id && element.unit_id == item.unit_id) {
+                    // если есть - увеличиваем количество
+                    ifExist = true;
+                    if (typeof (element.quantity) === 'undefined') {
+                        element.quantity = 1;
+                    } else {
+                        element.quantity = (parseInt(element.quantity));
+                        element.quantity += +item.quantity;
+                    }
+                }
+            });
+            // если новенький -> добавляем
+            if (!ifExist) {
+                basket_data.push(item);
+                // ЯМ Цель
+                if (typeof yaCounter51615776 !== 'undefined') {
+                    yaCounter51615776.reachGoal('BASKET'); //положить корзину в товар
+                }
+            }
+            this.saveData(basket_data);
+
+            OnAddItem();
+
+        },
+        removeItem: function (item) {
+            var basket_data = this.getData();
+            // смотрим нет ли такой позиции
+            var break_each = false;
+            if (basket_data) {
+                $.each(basket_data, function (index, element) {
+                    if (break_each) {
+                        return true;
+                    }
+                    if (element.id == item.id && element.unit_id == item.unit_id) {
+                        // если есть удаляем
+                        basket_data.splice(index, 1);
+                        break_each = true;
+                    }
+                });
+            }
+            this.saveData(basket_data);
+
+            OnRemoveItem(item);
+
+        },
+        updateItem: function (item) {
+            var basket_data = this.getData();
+            // смотрим нет ли такой позиции
+            var break_each = false;
+            if (basket_data) {
+                $.each(basket_data, function (index, element) {
+                    if (break_each) {
+                        return true;
+                    }
+                    if (element.id == item.id && element.unit_id == item.unit_id) {
+                        // если есть заменяем
+                        element.quantity = item.quantity;
+                        break_each = true;
+                    }
+                });
+            }
+            this.saveData(basket_data);
+
+            OnUpdateItem();
+
+        },
+        clean: function () {
+            this.saveData([]);
+        },
+        countItems: function () {
+            return this.getData().length;
+        },
+        countSum: function () {
+            var sum = 0;
+            $.each(this.getData(), function (i, el) {
+                sum += parseInt(el.quantity) * parseFloat(el.price);
+            });
+            
+            //Если в корзине и дисконтная карта верно введена, то скидка 8%
+            if($('.discount_sum:visible').length){
+                $('.discount_sum').text(Math.round((sum * 0.92) * 100) / 100); //8 %
+            }
+            
+            return sum.toLocaleString('ru');
+        },
+        eventListener: function () {
+            var self = this;
+
+            $('#add_to_basket').click(function () {
+                var item = {
+                    id: $(this).data('id'),
+                    unit_id: $('.product_offer.active').data('unit_id'),
+                    quantity: $('#qty').val(),
+                    title: $('h1').text(),
+                    description: $('.seo_description').text(),
+                    image: $('.miniature').eq(0).data('gallery_img') || $('#product_main_img img').attr('src'),
+                    price: $('.product_offer.active').data('price') || 1,
+                    unit: $('.product_offer.active').text(),
+                    url: location.pathname + location.search
+                };
+
+                self.addItem(item);
+                //Добавление в корзину
+            });
+
+        },
+        init: function () {
+            if (!this.status) {
+                this.status = 1;
+                this.eventListener();
+            }
+        },
+
+        morph: function (n, f1, f2, f5) {
+            n = Math.abs(parseInt(n)) % 100;
+            if (n > 10 && n < 20)
+                return f5;
+            n = n % 10;
+            if (n > 1 && n < 5)
+                return f2;
+            if (n == 1)
+                return f1;
+            return f5;
+        }
+
+    };
+    window.basket.init();
+
+
+
+//Удаляем продукт из корзины
+    $('#basket_table').on('click', '.remove_basket_product', function (e) {
+        var $position = $(e.target).parents('.basket_item');
+        basket.removeItem({id: $position.data('id'), unit_id: $position.data('unit_id')});
+        $position.fadeOut(200, function () {
+            $(this).remove();
+        });
+    });
+
+
+////Изменение кол-ва в корзине
+//    $('#basket_table').on('change', 'input.qty', function (e) {
+//        var $this = e.target;
+//        var value = +$($this).val();
+//        if (!isNumeric(value) || value < 1) {
+//            $($this).val('1');
+//        }
+//        var product_id = $($this).parent().parent('div').data('id');
+//        var new_qty = $($this).val();
+//        basket.updateItem({id: product_id, quantity: new_qty});
+//    });
+
+
+
+//Изменение кол-ва в всплывающем окне 
+    $('#basket_popup').on('change', 'input.qty', function (e) {
+        var $position = $(e.target).parents('div.basket_popup_item');
+        var product_id = $position.data('id');
+        var product_unit_id = $position.data('unit_id');
+        var new_qty = $(e.target).val();
+        basket.updateItem({id: product_id, unit_id: product_unit_id, quantity: new_qty});
+    });
+
+
+//    Удаление из всплывающей формы
+    $('#basket_popup').on('click', '.remove_basket_product', function (e) {
+        var $position = $(e.target).parents('.basket_popup_item');
+        basket.removeItem({id: $position.data('id'), unit_id: $position.data('unit_id')});
+        $position.fadeOut(200, function () {
+            $(this).remove();
+        });
+    });
+
+
+//Изменение кол-ва в корзине 
+    $('#basket_table').on('change', '.basket_item_qty', function (e) {
+
+        var new_qty = $(e.target).val();
+        if (!isNaN(parseFloat(new_qty)) && isFinite(new_qty)) { // Если число
+            var $position = $(e.target).parents('.basket_item');
+            basket.updateItem({id: $position.data('id'), unit_id: $position.data('unit_id'), quantity: new_qty});
+        }
+    });
+
+
+//Удаление всего со страницы корзины
+    $('#remove_all span').click(function () {
+        $('#basket_left').fadeOut(400, function () {
+            $('.empty_basket_block').append('<div id="basket_empty">Ваша корзина пуста</div>');
+            basket.clean();
+            InitBasketParam();
+        });
+    });
+
+
+
+
+
+
+    // При любом изминении и при старте запускаем
+    function InitBasketParam() {
+        var basket_count = basket.countItems();
+        $('.basket_count').text(basket_count);
+        $('.basket_sum').text(basket.countSum());
+        $('.basket_unit').text(GetRusPadezh('товар'));
+
+        if (basket.countItems()) {
+            $('#basket_wrapper').animate({'opacity': 1}, 100);
+            $('.basket_title, .basket_contain_info').show();
+            $('#basket_empty, .basket_empty').hide();
+        } else {
+            $('#basket_wrapper, .basket_title, .basket_contain_info').hide();
+            $('#basket_empty, .basket_empty').show();
+        }
+
+        $('.goods_title').text(basket.morph(basket_count, 'товар', 'товара', 'товаров'));
+        $('#basket_wrap').animate({'opacity': 1}, 100);
+    }
+
+    InitBasketParam();
+
+    function OnAddItem() {
+
+        InitBasketParam();
+
+        //Открываем всплывающее окно
+
+        $('.basket_count').text(basket.countItems());
+        $('.basket_sum').text(basket.countSum());
+
+        var popup_basket = '';
+        $('#basket_popup_items').empty();
+        $.each(basket.getData(), function (i, item) {
+            popup_basket += '<div class="basket_popup_item" data-id="' + item['id'] + '" data-unit_id="' + item['unit_id'] + '">  \n\
+                    <div class="item_popup_img"><a href="' + item['url'] + '"><img src="/core/image.php?path=' + item['image'] + '&w=300&h=210"></a></div> \n\
+                    <div class="item_popup_title"><a href="' + item['url'] + '">' + item['title'] + ', ' + item['unit'] + '</a></div> \n\
+                    <div class="item_popup_right"> \n\
+                                <div class="count_choose">\n\
+                                    <div class="count_minus">—</div>\n\
+                                    <input type="text" class="qty number_input" name="count_product" value="' + item['quantity'] + '">\n\
+                                    <div class="count_plus">+</div>\n\
+                                </div>\n\
+                        <div class="item_popup_price">' + item['price'] + ' <span class="price_currency">руб.</div> \n\
+                        <i class="remove_basket_product fa fa-times" title="Удалить из корзины"></i> \n\
+                    </div> \n\
+                </div>';
+        });
+        $('html').addClass('popup_open');
+        $('#basket_popup_items').append(popup_basket).parents('#basket_popup_wrap').fadeIn();
+
+    }
+
+
+    function OnUpdateItem(item) {
+        InitBasketParam();
+    }
+
+
+    function OnRemoveItem(item) {
+
+        InitBasketParam();
+
+//            Таблица в корзине
+        if ($('#basket_table').size()) {
+            if (basket.countItems()) {
+                $('#basket_table tr[data-id="' + item.id + '"]').fadeOut(400);
+            } else {
+                $('#basket_table').fadeOut(400, function () {
+                    $('#basket_left').html('<div id="basket_empty">Ваша корзина пуста</div>');
+                });
+            }
+        }
+
+//Popup окно
+        if ($('#basket_popup_wrap').css('display') === 'block') {
+            if (!basket.countItems()) {
+                $('#basket_popup .popup_close').click();
+            }
+        }
+
+
+    }
+
+    function GetRusPadezh(word) {
+
+        var str_basket_count = '' + basket.countItems();
+        var last_num = +str_basket_count[str_basket_count.length - 1];
+
+        if (last_num === 2 || last_num === 3 || last_num === 4) {
+            return word + 'a';
+        } else if ((last_num > 4 && last_num <= 9) || last_num === 0) {
+            return word + 'ов';
+        } else {
+            return word;
+        }
+    }
+
+
+    function isNumeric(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+        // Метод isNaN пытается преобразовать переданный параметр в число. 
+        // Если параметр не может быть преобразован, возвращает true, иначе возвращает false.
+        // isNaN("12") // false 
+    }
+
+});
+
