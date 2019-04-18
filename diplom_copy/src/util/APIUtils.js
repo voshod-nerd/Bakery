@@ -2,6 +2,7 @@ import { API_BASE_URL,ADMIN_API_BASE_URL, POLL_LIST_SIZE, ACCESS_TOKEN } from '.
 
 const request = (options) => {
     const headers = new Headers({
+        'Accept': 'application/json',
         'Content-Type': 'application/json',
     })
 
@@ -70,6 +71,31 @@ export function addTopic(topicRequest) {
         url: ADMIN_API_BASE_URL + "/addcontent",
         method: 'POST',
         body: JSON.stringify(topicRequest)
+    });
+}
+
+export function getAllGoods() {
+    return request({
+        url: API_BASE_URL + "/goods/all",
+        method: 'GET'
+    });
+}
+
+export function createGoods(goodsData) {
+    
+    return request({
+        url: API_BASE_URL + "/goods/addgoods",
+        method: 'POST',
+        body: JSON.stringify(goodsData)
+    });
+}
+
+export function updateGoods(goodsData) {
+    
+    return request({
+        url: API_BASE_URL + "/goods/update",
+        method: 'PUT',
+        body: JSON.stringify(goodsData)
     });
 }
 

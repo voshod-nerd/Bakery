@@ -33,11 +33,12 @@ function mapDispatchToProps(dispatch) {
 class Apps extends Component {
   constructor(props) {
     super(props);
-    this.state = {
+   /* this.state = {
       currentUser: null,
       isAuthenticated: false,
       isLoading: false
     }
+   */ 
     this.handleLogout = this.handleLogout.bind(this);
     this.loadCurrentUser = this.loadCurrentUser.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
@@ -45,15 +46,22 @@ class Apps extends Component {
 
 
   loadCurrentUser() {
-    this.setState({
+    console.log("This is loadCurrent User");
+  /*  this.setState({
       isLoading: true
     });
+    */
     getCurrentUser()
       .then(response => {
+        console.log("Ответ пришел");
         this.props.loginUser(response);
         let role = response.roles[0];
         let name = response.name;
-        if (name===this.props.user.name) return;
+        console.log("1");
+        //if (name===this.props.user.name) {console.log('Магия');}
+       // if (name===this.props.user.name) { console.log("мне лень перейти"); return; }
+        console.log("2");
+        console.log("Роль");
         console.log(role);
         switch (role) {
           case "ROLE_USER": { console.log("I am user"); console.log(this.props.history); this.props.history.push("/"); break; }
@@ -61,15 +69,17 @@ class Apps extends Component {
           case "ROLE_DRIVER": {console.log("I am driver"); console.log(this.props.history); this.props.history.push("/driver"); break; }
           default: break;
         }
+        console.log("3");
         
         console.log(response);
         //this.props.history.push("/"); 
 
-        this.setState({
+       /* this.setState({
           currentUser: response,
           isAuthenticated: true,
           isLoading: false
         });
+        */
         console.log(response);
       }).catch(error => {
         this.setState({
