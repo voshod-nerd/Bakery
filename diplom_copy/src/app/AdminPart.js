@@ -113,18 +113,7 @@ class AdminPart extends Component {
             });
         }
 
-        /* await fetch('/api/group', {
-           method: (item.id) ? 'PUT' : 'POST',
-           headers: {
-             'X-XSRF-TOKEN': this.state.csrfToken,
-             'Accept': 'application/json',
-             'Content-Type': 'application/json'
-           },
-           body: JSON.stringify(item),
-           credentials: 'include'
-         });
-         */
-        //this.props.history.push('/groups');
+       
     }
 
     handleClickEdit(value) {

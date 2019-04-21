@@ -19,8 +19,8 @@ class Main extends Component {
                         <Figure>
                             <Figure.Image
                                 width={1200}
-                                height={250}
-                                alt="171x180"
+                                height={300}
+                              
                                 src={logo1}
                             />
                             </Figure>
@@ -33,7 +33,7 @@ class Main extends Component {
                         <Carousel.Item>
                         <Figure.Image
                                 width={1200}
-                                height={250}
+                                height={300}
                                 alt="171x180"
                                 src={logo2}
                             />
@@ -46,7 +46,7 @@ class Main extends Component {
                         <Carousel.Item>
                         <Figure.Image
                                 width={1200}
-                                height={250}
+                                height={300}
                                 alt="171x180"
                                 src={logo3}
                             />

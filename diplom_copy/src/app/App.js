@@ -22,6 +22,7 @@ import DriverPart from './DriverPart';
 import AdminPart from './AdminPart';
 import Goods from '../common/Goods';
 import ShopList from '../common/ShopList';
+import ListOrders from '../common/ListOrders';                          
 function mapDispatchToProps(dispatch) {
   return {
     loginUser: user => dispatch(loginUser(user)),
@@ -33,12 +34,6 @@ function mapDispatchToProps(dispatch) {
 class Apps extends Component {
   constructor(props) {
     super(props);
-   /* this.state = {
-      currentUser: null,
-      isAuthenticated: false,
-      isLoading: false
-    }
-   */ 
     this.handleLogout = this.handleLogout.bind(this);
     this.loadCurrentUser = this.loadCurrentUser.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
@@ -47,10 +42,7 @@ class Apps extends Component {
 
   loadCurrentUser() {
     console.log("This is loadCurrent User");
-  /*  this.setState({
-      isLoading: true
-    });
-    */
+  
     getCurrentUser()
       .then(response => {
         console.log("Ответ пришел");
@@ -58,11 +50,11 @@ class Apps extends Component {
         let role = response.roles[0];
         let name = response.name;
         console.log("1");
-        //if (name===this.props.user.name) {console.log('Магия');}
-       // if (name===this.props.user.name) { console.log("мне лень перейти"); return; }
-        console.log("2");
-        console.log("Роль");
-        console.log(role);
+        console.log(this.props.user.name);
+        console.log(name);
+        if (name===this.props.user.name) {console.log('Магия');}
+      
+      
         switch (role) {
           case "ROLE_USER": { console.log("I am user"); console.log(this.props.history); this.props.history.push("/"); break; }
           case "ROLE_ADMIN": {console.log("I am admin"); console.log(this.props.history); this.props.history.push("/admin"); break; }
@@ -71,16 +63,7 @@ class Apps extends Component {
         }
         console.log("3");
         
-        console.log(response);
-        //this.props.history.push("/"); 
-
-       /* this.setState({
-          currentUser: response,
-          isAuthenticated: true,
-          isLoading: false
-        });
-        */
-        console.log(response);
+      
       }).catch(error => {
         this.setState({
           isLoading: false
@@ -147,6 +130,8 @@ class Apps extends Component {
               render={(props) => <ShopList  {...props} />}></Route>
             <Route path="/goods"
               render={(props) => <Goods  {...props} />}></Route>
+               <Route path="/orders"
+              render={(props) => <ListOrders  {...props} />}></Route>
             <Route path="/login"
               render={(props) => <Login onLogin={this.handleLogin} {...props} />}></Route>
             <Route path="/signup" component={Signup}></Route>

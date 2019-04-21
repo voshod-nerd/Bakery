@@ -16,13 +16,15 @@ public class UserSummary {
     private Long id;
     private String username;
     private String name;
+    private String adress;
     private List<String> roles = new ArrayList<>();
 
-    public UserSummary(Long id, String username, String name,List<String> roles) {
+    public UserSummary(Long id, String username, String name,String adress,List<String> roles) {
         this.id = id;
         this.username = username;
         this.name = name;
         this.roles=roles;
+        this.adress=adress;
     }
 
 

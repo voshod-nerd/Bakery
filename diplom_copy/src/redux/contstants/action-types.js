@@ -1,3 +1,6 @@
 export const LOGIN_USER = "LOGIN_USER";
 export const LOGOUT_USER= "LOGOUT_USER";
 export const ADD_GOODS= "ADD_GOODS";
+export const DELETE_GOODS="DELETE_GOODS"
+export const REDUCE_GOODS_COUNT="REDUCE_GOODS_COUNT"
+export const DELETE_ALL_GOODS="DELETE_ALL_GOODS"

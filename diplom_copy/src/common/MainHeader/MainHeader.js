@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import Navbar from 'react-bootstrap/Navbar';
 import { Nav } from "react-bootstrap";
 import { connect } from "react-redux";
-
+import {
+    Link
+  } from 'react-router-dom';
 
 
 const mapStateToProps = state => {
@@ -42,15 +44,17 @@ class MainHeader extends Component {
             }
             if (this.props.user.roles[0] === "ROLE_DRIVER") {
                 menuItems = [
-                    <Navbar.Brand key='list' href="#"  >Маршрутный лист</Navbar.Brand>,
+                 
+                    <Link to='/list'><Navbar.Brand key='shop'>Маршрутный лист</Navbar.Brand></Link>,
                     <Navbar.Brand key='logout' href="#" onClick={this.handleLogoutClick} >Выйти</Navbar.Brand>
-
+                   
                 ];
             }
             if (this.props.user.roles[0] === "ROLE_USER") {
 
                 shop = [
-                    <Navbar.Brand key='shop' href="/shoplist"  >Корзина</Navbar.Brand>,
+                     <Link to='/shoplist' key='shop'><Navbar.Brand >Корзина</Navbar.Brand></Link>,
+                     <Link to='/orders' key='orders'><Navbar.Brand >Мои заказы</Navbar.Brand></Link>
                 
                 ]; 
 
@@ -62,16 +66,19 @@ class MainHeader extends Component {
             }
         } else {
             menuItems = [
-                <Navbar.Brand key="/signup" href="/signup">Регистрация</Navbar.Brand>,
-                <Navbar.Brand key="/login" href="/login">Войти</Navbar.Brand>
+               
+                <Link to='/signup' key='signup'><Navbar.Brand >Регистрация</Navbar.Brand></Link>,
+                <Link to='/login' key='login'><Navbar.Brand >Войти</Navbar.Brand></Link>
             ];
         }
 
         return (
             <div>
                 <Navbar collapseOnSelect expand="lg" bg="primary" variant="dark">
-                    <Navbar.Brand href="/">Главная</Navbar.Brand>
-                    <Navbar.Brand href="/goods">Каталог товара</Navbar.Brand>
+                   
+                    <Link to='/'><Navbar.Brand key='shop'>Главная</Navbar.Brand></Link>
+                    <Link to='/goods'><Navbar.Brand key='shop'>Каталог товара</Navbar.Brand></Link>
+                   
                     
                     <Nav>
                     {shop}
@@ -94,6 +101,4 @@ class MainHeader extends Component {
     }
 }
 
-
-//const MainHeader = connect(mapStateToProps)(MainHead);
 export default connect(mapStateToProps)(MainHeader);

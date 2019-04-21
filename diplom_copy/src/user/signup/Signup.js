@@ -30,7 +30,11 @@ class Signup extends Component {
             },
             password: {
                 value: ''
+            },
+            adress: {
+                value:""
             }
+
         }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -59,7 +63,8 @@ class Signup extends Component {
             name: this.state.name.value,
             email: this.state.email.value,
             username: this.state.username.value,
-            password: this.state.password.value
+            password: this.state.password.value,
+            adress:this.state.adress.value
         };
         console.log(signupRequest);
         signup(signupRequest)
@@ -104,14 +109,21 @@ class Signup extends Component {
                 <p> Введите данные для регистрации</p>
                 <Form onSubmit={this.handleSubmit} >
                     <Form.Group controlId="formBasicName">
-                        <Form.Label>Имя</Form.Label>
+                        <Form.Label>ФИО пользователя</Form.Label>
                         <Form.Control type="text" name="name" placeholder="Введите имя" value={this.state.name.value} onChange={(event) => this.handleInputChange(event, this.validateName)} />
                     </Form.Group>
                     <Form.Group controlId="formBasicUserName">
-                        <Form.Label>Имя пользователя</Form.Label>
+                        <Form.Label>Логин</Form.Label>
                         <FormControl.Feedback type={(this.state.username.validateStatus === 'error') ? "error" : "valid"} >Имя пользователя занято</FormControl.Feedback>
                         <Form.Control value={this.state.username.value} isValid={this.state.username.validateStatus === 'success'} isInvalid={this.state.username.validateStatus === 'error'} onBlur={this.validateUsernameAvailability} name="username" onChange={(event) => this.handleInputChange(event, this.validateUsername)} type="text" placeholder="Введите имя пользователя" />
                     </Form.Group>
+                    <Form.Group controlId="formAdress">
+                        <Form.Label>Адрес</Form.Label>
+                       
+                        <Form.Control value={this.state.adress.value}  name="adress" onChange={(event) => this.handleInputChange(event, this.validateUsername)} type="text" placeholder="Введите адрес доставки" />
+                    </Form.Group>
+
+
                     <Form.Group controlId="formBasicEmail"  >
                         <Form.Label>Адрес электронной почты</Form.Label>
                         <FormControl.Feedback type={(this.state.email.validateStatus === 'error') ? "error" : "valid"} >Адрес электронной почты занят</FormControl.Feedback>
