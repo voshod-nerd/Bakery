@@ -1,19 +1,27 @@
-import { LOGIN_USER,LOGOUT_USER,ADD_GOODS } from "../contstants/action-types";
+import { LOGIN_USER,LOGOUT_USER,ADD_GOODS,DELETE_GOODS,REDUCE_GOODS_COUNT,DELETE_ALL_GOODS } from "../contstants/action-types";
 export function loginUser(payload) {
-  console.log("Hello LOGIN_USER");
-  console.log(payload);
-  console.log("Hello LOGIN_USER");
   return { type: LOGIN_USER, payload };
 }
 export function logOutUser(payload) {
-  console.log("Hello LOGOUT_USER");
-  console.log(payload);
-  console.log("Hello LOGOUT");
+
   return { type: LOGOUT_USER, payload };
 }
 export function addGoods(payload) {
-  console.log("Hello ADD_GOODS");
-  console.log(payload);
-  console.log("Hello ADD_GOODS");
+ 
   return { type: ADD_GOODS, payload };
 }
+export function deleteGoodsFromShopList(payload) {
+
+  return { type: DELETE_GOODS, payload };
+}
+
+export function reduceCountGoodsFromShopList(payload) { 
+  return { type: REDUCE_GOODS_COUNT, payload };
+}
+
+export function deleteAllGoods(payload) { 
+  return { type: DELETE_ALL_GOODS, payload };
+}
+
+
+

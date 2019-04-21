@@ -2,52 +2,58 @@ import React, { Component } from 'react'
 import { InputGroup, FormControl, Breadcrumb, Card, Button } from 'react-bootstrap';
 import { addGoods } from "../redux/actions/index";
 import { connect } from "react-redux";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
+import { getAllGoods, uuid4 } from '../util/APIUtils';
 function mapDispatchToProps(dispatch) {
     return {
         addGoods: item => dispatch(addGoods(item)),
     };
 }
 
+const uuidv1 = require('uuid/v1');
+
 
 class Goods extends Component {
+
+    
 
     constructor(props) {
         super(props);
         console.log('This is Goods');
 
         this.state = {
+            isLoading: false,
             initialItems: [
-                {   
-                    id:1,
+                {
+                    id: 1,
                     name: "Хлеб бездрожевой",
                     price: 45,
                     weigtht: 400,
                     description: "Состав: мука пшеничная высший сорт, закваска, кориандр, соль, сахар, вода, тыквенные семечки. Бездрожжевой хлеб легко усваивается и способствует более активной работе кишечника. Тыквенные семечки - природный кладезь полезных веществ. Кориандр придает этому хлебу неповторимый аромат."
                 },
-                { 
-                    id:2,
+                {
+                    id: 2,
                     name: "Хлеб дрожевой",
                     price: 50,
                     weigtht: 450,
                     description: "Состав: мука пшеничная высший сорт, закваска, кориандр, соль, сахар, вода, тыквенные семечки. Дрожжевой хлеб легко усваивается и способствует более активной работе кишечника. Тыквенные семечки - природный кладезь полезных веществ. Кориандр придает этому хлебу неповторимый аромат."
                 },
                 {
-                    id:3,
+                    id: 3,
                     name: "Батон с изюмом",
                     price: 50,
                     weigtht: 450,
                     description: "Тесто дрожжевое, изюм. Похрустеть сухариками - это особое удовольствие! А похрустеть сухариками с изюмом - удовольствие вдвойне! Впрочем, можно и не хрустеть, а макать в крепкий сладкий чай. вы делали так в детстве? Почему не повторить этот прекрасный опыт?"
                 },
                 {
-                    id:4, 
+                    id: 4,
                     name: "Сухарики",
                     price: 50,
                     weigtht: 450,
                     description: "Состав: тесто дрожжевое Хрустящие домашние сухарики - чудесная добавка к супчику или бульону. Можно сушить самим, а можно купить у нас - сэкономите время! "
                 },
                 {
-                    id:5,
+                    id: 5,
                     name: "Ромашка с кунжутом",
                     price: 50,
                     weigtht: 230,
@@ -59,11 +65,33 @@ class Goods extends Component {
         }
         this.filterList = this.filterList.bind(this);
         this.handleClick = this.handleClick.bind(this);
-       // this.handleLogin = this.handleLogin.bind(this);
+        this.updateListGoods = this.updateListGoods.bind(this);
     }
 
 
+
+    componentDidMount() {
+        this.updateListGoods();
+    }
+
+    updateListGoods() {
+        console.log("Update Update Update");
+        this.setState({ isLoading: true });
+
+        getAllGoods().then(
+            response => this.setState({ items: response, initialItems: response, isLoading: false })
+        ).catch(error => {
+            this.setState({
+                isLoading: false
+            });
+        });
+    }
+
+
+
     handleClick(item) {
+      
+        item.uuid =  uuidv1() ;
         this.props.addGoods(item);
         toast.info('Вы добавили товар в корзину', {
             position: "top-center",
@@ -73,7 +101,7 @@ class Goods extends Component {
             pauseOnHover: true,
             draggable: true,
             type: 'error'
-          });
+        });
     }
 
 
@@ -109,7 +137,7 @@ class Goods extends Component {
                         <Card.Text>
                             Вес :{item.weigtht} гр.
                         </Card.Text>
-                        <Button variant="outline-primary"  onClick={() => { this.handleClick(item) }} 	 >Добавить в корзину</Button>
+                        <Button variant="outline-primary" onClick={() => { this.handleClick(item) }} 	 >Добавить в корзину</Button>
                     </Card.Body>
                 </Card>
             </div>
@@ -152,6 +180,5 @@ const List = (list) => {
 
 
 
-//const App = connect(null, mapDispatchToProps)(Apps);
-//export default withRouter(App);
+
 export default connect(null, mapDispatchToProps)(Goods);;
