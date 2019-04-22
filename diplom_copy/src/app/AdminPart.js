@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, Breadcrumb, ButtonGroup, Button, Nav, Table, Modal, Col, Row, InputGroup, Form } from "react-bootstrap";
+import { Tabs, Tab, Breadcrumb, ButtonGroup, Button,  Table, Modal, Col, Row,  Form, Container } from "react-bootstrap";
 import { getAllGoods, createGoods, updateGoods } from '../util/APIUtils';
 import { toast } from 'react-toastify';
-import { async } from 'q';
+
 
 class AdminPart extends Component {
     constructor(props) {
@@ -163,7 +163,7 @@ class AdminPart extends Component {
                 <td style={{ whiteSpace: 'nowrap' }}>{group.price}</td>
                 <td style={{ whiteSpace: 'nowrap' }}>{group.weight}</td>
                 <td style={{ whiteSpace: 'nowrap' }}>{group.actual}</td>
-                <td style={{ whiteSpace: 'nowrap' }}>{group.description}</td>
+                <td style={{ whiteSpace: 'word-wrap' }}>{group.description}</td>
 
                 <td>
                     <ButtonGroup>
@@ -175,14 +175,14 @@ class AdminPart extends Component {
         });
 
         let component = this.state.component;
-        let show;
+        let show=[];
         if (component === 'AddContent') {
             show = [
             ];
         }
         return (
-
-            <div >
+            <Container>
+           
                 <Modal
                     show={this.state.show}
                     onHide={this.handleHide}
@@ -227,7 +227,7 @@ class AdminPart extends Component {
                 </Modal>
 
                 <Breadcrumb>
-                    <Breadcrumb.Item active>Панель администоратора</Breadcrumb.Item>
+                    <Breadcrumb.Item active>Панель администратора</Breadcrumb.Item>
                 </Breadcrumb>
 
 
@@ -237,18 +237,18 @@ class AdminPart extends Component {
                     <Tab eventKey="home" title="Список товаров пекарни">
 
                         <Button variant="primary" onClick={this.handleClickAddGoods}>
-                            Добавить товаров </Button>
+                            Добавить товар </Button>
                       
-                        <Table className="mt-4">
+                        <Table striped bordered hover size="sm">
                             <thead>
                                 <tr>
-                                    <th width="20%">Название</th>
-                                    <th width="20%">Цена</th>
-                                    <th width="20%">Вес</th>
-                                    <th width="20%">Актуальность</th>
-                                    <th width="20%">Описание</th>
+                                    <th width="10%">Название</th>
+                                    <th width="5%">Цена</th>
+                                    <th width="5%">Вес</th>
+                                    <th width="5%">Актуальность</th>
+                                    <th width="50%">Описание</th>
 
-                                    <th width="10%">Действия</th>
+                                    <th width="25%">Действия</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -262,12 +262,8 @@ class AdminPart extends Component {
                     <Tab eventKey="contact" title="Договора" >
                         <p>3</p>
                     </Tab>
-                </Tabs>
-
-
-
-            </div>
-
+                </Tabs> 
+            </Container>
         );
     }
 }

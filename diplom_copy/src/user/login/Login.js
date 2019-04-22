@@ -28,10 +28,8 @@ class Login extends Component {
         const loginRequest = Object.assign({}, values);
         login(loginRequest)
             .then(response => {
-                localStorage.setItem(ACCESS_TOKEN, response.accessToken);
-                
+                localStorage.setItem(ACCESS_TOKEN, response.accessToken);                
                 this.props.onLogin();
-               // this.props.history.push("/cabinet");
             }).catch(error => {
                 if (error.status === 401) {
                     toast.error('Неверный логин и/или пароль', {
@@ -45,7 +43,7 @@ class Login extends Component {
                     });
 
                 } else {
-                    toast.error('Чтото не так с данными', {
+                    toast.error('Чтото не так с серверром. Попробуйте чуть позже', {
                         position: "top-center",
                         autoClose: false,
                         hideProgressBar: false,

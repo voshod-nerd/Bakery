@@ -12,7 +12,7 @@ class DriverPart extends Component {
 
     render() {
         return (
-            <div>
+            <div >
                 <p>Это часть водителя</p>
             </div>
         );

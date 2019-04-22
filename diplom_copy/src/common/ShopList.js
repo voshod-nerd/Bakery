@@ -110,7 +110,7 @@ class ShopListReact extends Component {
             let totalPrice = 0;
             this.props.shoplist.forEach(x => { totalPrice = totalPrice + parseInt(x.price) * parseInt(x.count); });
             shoplist = [
-                <Form>
+                <Form key="formshoplist">
                     <Table striped bordered hover>
                         <thead>
                             <tr>

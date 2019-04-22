@@ -22,7 +22,7 @@ import DriverPart from './DriverPart';
 import AdminPart from './AdminPart';
 import Goods from '../common/Goods';
 import ShopList from '../common/ShopList';
-import ListOrders from '../common/ListOrders';                          
+import ListOrders from '../common/ListOrders';
 function mapDispatchToProps(dispatch) {
   return {
     loginUser: user => dispatch(loginUser(user)),
@@ -39,10 +39,12 @@ class Apps extends Component {
     this.handleLogin = this.handleLogin.bind(this);
   }
 
+  
+
 
   loadCurrentUser() {
     console.log("This is loadCurrent User");
-  
+
     getCurrentUser()
       .then(response => {
         console.log("Ответ пришел");
@@ -50,20 +52,17 @@ class Apps extends Component {
         let role = response.roles[0];
         let name = response.name;
         console.log("1");
-        console.log(this.props.user.name);
+        console.log(role);
         console.log(name);
-        if (name===this.props.user.name) {console.log('Магия');}
-      
-      
         switch (role) {
-          case "ROLE_USER": { console.log("I am user"); console.log(this.props.history); this.props.history.push("/"); break; }
-          case "ROLE_ADMIN": {console.log("I am admin"); console.log(this.props.history); this.props.history.push("/admin"); break; }
-          case "ROLE_DRIVER": {console.log("I am driver"); console.log(this.props.history); this.props.history.push("/driver"); break; }
+          // case "ROLE_USER": { console.log("I am user"); console.log(this.props.history); this.props.history.push("/"); break; }
+          case "ROLE_ADMIN": { console.log("I am admin"); console.log(this.props.history); this.props.history.push("/admin"); break; }
+          case "ROLE_DRIVER": { console.log("I am driver"); console.log(this.props.history); this.props.history.push("/driver"); break; }
           default: break;
         }
         console.log("3");
-        
-      
+
+
       }).catch(error => {
         this.setState({
           isLoading: false
@@ -77,12 +76,7 @@ class Apps extends Component {
 
     console.log('handleLogout');
     this.props.logOutUser({ user: null, isAuthenticated: false });
-    /*this.setState({
-      currentUser: null,
-      isAuthenticated: false
-    });
-    */
-
+    
     this.props.history.push(redirectTo);
 
     toast.info('Вы вышли из учетной записи', {
@@ -105,13 +99,15 @@ class Apps extends Component {
       draggable: true,
       type: 'error'
     });
-    console.log('This is login');
+   
+    this.props.history.push("/");
     this.loadCurrentUser();
-    //this.props.history.push("/");
+
 
   }
 
   componentDidMount() {
+    document.title = "Первая Пекарня"
     this.loadCurrentUser();
   }
 
@@ -125,12 +121,12 @@ class Apps extends Component {
             <Route exact path="/"
               render={(props) => <Main  {...props}></Main>}>
             </Route>
-           
+
             <Route path="/shoplist"
               render={(props) => <ShopList  {...props} />}></Route>
             <Route path="/goods"
               render={(props) => <Goods  {...props} />}></Route>
-               <Route path="/orders"
+            <Route path="/orders"
               render={(props) => <ListOrders  {...props} />}></Route>
             <Route path="/login"
               render={(props) => <Login onLogin={this.handleLogin} {...props} />}></Route>
@@ -139,7 +135,7 @@ class Apps extends Component {
               render={(props) => <Login onLogin={this.handleLogin} {...props} />}></Route>
             <Route path="/driver" render={(props) => <DriverPart  {...props} />}></Route>
             <Route path="/admin" render={(props) => <AdminPart  {...props} />}></Route>
-            
+
           </Switch>
         </Container>
       </div>
