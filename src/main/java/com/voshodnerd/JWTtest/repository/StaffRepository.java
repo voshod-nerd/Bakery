@@ -1,4 +1,7 @@
 package com.voshodnerd.JWTtest.repository;
 
-public class StaffRepository {
+import com.voshodnerd.JWTtest.model.Staff;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface StaffRepository extends JpaRepository<Staff,Long> {
 }

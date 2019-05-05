@@ -105,6 +105,40 @@ export function getAllOrders() {
     });
 }
 
+export function getAllOrdersByDate(date) {
+    return request({
+        url: API_BASE_URL + "/order/by_date/"+date,
+        method: 'GET'
+    });
+}
+
+
+export function getAllStaff() {
+    return request({
+        url: API_BASE_URL + "/staff/all",
+        method: 'GET'
+    });
+}
+
+export function createStaff(data) {
+    
+    return request({
+        url: API_BASE_URL + "/staff/addstaff",
+        method: 'POST',
+        body: JSON.stringify(data)
+    });
+}
+
+export function updateStaff(data) {
+    
+    return request({
+        url: API_BASE_URL + "/staff/update",
+        method: 'PUT',
+        body: JSON.stringify(data)
+    });
+}
+
+
 
 export function updateGoods(goodsData) {
     

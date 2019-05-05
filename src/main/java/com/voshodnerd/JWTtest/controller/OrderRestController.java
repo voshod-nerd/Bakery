@@ -21,8 +21,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import javax.xml.crypto.Data;
 import java.net.URI;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -116,6 +120,53 @@ public class OrderRestController {
         } );
         return ls;
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/by_date/{strDate}")
+    public List<OrderItem> getAllOrderByDate(@PathVariable String strDate)  {
+
+        Date date=new Date();
+        try
+        { date=new SimpleDateFormat("yyyy-MM-dd").parse(strDate); }
+        catch (ParseException exception) {
+            System.out.println(exception.getMessage());
+        }
+        System.out.println("By date");
+
+        //System.out.println(orderRepository.findByAllByDtorder(date).get().size());
+        Optional<List<Order>> result =  orderRepository.findByAllByDtorder(date);
+        List<Order> lstOrder= result.isPresent()?result.get(): new ArrayList<Order>();
+
+        //List<Order> lstOrder=  orderRepository.findByAllByDtorder(date).isPresent()?  orderRepository.findByAllByDtorder(date).get();
+        final List<OrderItem>  ls = new ArrayList<>();
+
+        lstOrder.forEach((value) -> {
+            OrderItem item =new OrderItem();
+            item.setId(value.getId());
+            item.setDtorder(value.getDtorder());
+            item.setNumber(value.getNumber());
+            item.setIduser(value.getIduser());
+            item.setTotalprice(value.getTotalprice());
+            List<ContentOrders> co= contentOrdersRepository.findAllByIdorder(value.getId()).get();
+            List<ListGoods> lsGoods= new ArrayList<>();
+            for (ContentOrders v: co) {
+                ListGoods goods = new ListGoods();
+                goods.setId(v.getIdgoods().getId());
+                goods.setActual(v.getIdgoods().getActual());
+                goods.setName(v.getIdgoods().getName());
+                goods.setPrice(v.getIdgoods().getPrice());
+                goods.setWeight(v.getIdgoods().getWeight());
+                goods.setCount(v.getCount());
+                goods.toString();
+                lsGoods.add(goods);
+            }
+            item.setListGoods(lsGoods);
+            ls.add(item);
+        } );
+        return ls;
+    }
+
+
 
 
 

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Tabs, Tab, Breadcrumb, ButtonGroup, Button,  Table, Modal, Col, Row,  Form, Container } from "react-bootstrap";
 import { getAllGoods, createGoods, updateGoods } from '../util/APIUtils';
 import { toast } from 'react-toastify';
+import OrderList from '../common/OrderList';
+import Staff from '../common/Staff';
 
 
 class AdminPart extends Component {
@@ -256,11 +258,11 @@ class AdminPart extends Component {
                             </tbody>
                         </Table>
                     </Tab>
-                    <Tab eventKey="profile" title="Накладные">
-                        <p>2</p>
+                    <Tab eventKey="profile" title="Заказы">
+                        <OrderList></OrderList>
                     </Tab>
-                    <Tab eventKey="contact" title="Договора" >
-                        <p>3</p>
+                    <Tab eventKey="contact" title="Сотрудники" >
+                          <Staff></Staff>
                     </Tab>
                 </Tabs> 
             </Container>
