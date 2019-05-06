@@ -4,10 +4,13 @@
 package com.voshodnerd.JWTtest.controller;
 
 
+import com.voshodnerd.JWTtest.model.Role;
+import com.voshodnerd.JWTtest.model.RoleName;
 import com.voshodnerd.JWTtest.model.User;
 import com.voshodnerd.JWTtest.payload.UserIdentityAvailability;
 
 import com.voshodnerd.JWTtest.payload.UserSummary;
+import com.voshodnerd.JWTtest.repository.RoleRepository;
 import com.voshodnerd.JWTtest.repository.UserRepository;
 import com.voshodnerd.JWTtest.security.CurrentUser;
 import com.voshodnerd.JWTtest.security.UserPrincipal;
@@ -15,13 +18,12 @@ import com.voshodnerd.JWTtest.security.UserPrincipal;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,6 +38,8 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
 
 
@@ -53,9 +57,26 @@ public class UserController {
 
         });
 
-       // List<String> roles= currentUser.getAuthorities().stream().map(x->((GrantedAuthority) x).getAuthority() ).collect(Collectors.toList());
-       // UserSummary userSummary = new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName(),currentUser.getAdress(),roles);
+
         return result;
+    }
+
+
+    @PutMapping("/user/update")
+    public ResponseEntity<UserSummary> updateStudent(@Valid @RequestBody UserSummary usr) {
+         System.out.println("User/update");
+        usr.toString();
+        User user= userRepository.findById(usr.getId()).get();
+        RoleName roleName = RoleName.getEnumByName(usr.getRoles().get(0));
+
+        Role role = roleRepository.findByName(roleName).get();
+        user.getRoles().clear();
+        user.getRoles().add(role);
+        User newUser= userRepository.save(user);
+
+        newUser.toString();
+        return ResponseEntity.ok().body(usr);
+
     }
 
 

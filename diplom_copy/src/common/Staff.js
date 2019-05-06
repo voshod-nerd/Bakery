@@ -211,7 +211,7 @@ class Staff extends Component {
 
                                 <Form.Group controlId="work">
                                     <Form.Label >Статус занятости</Form.Label>
-                                    <input type="checkbox"  value={item.work} ></input>
+                                    <input type="checkbox" ></input>
                                 </Form.Group>
                                 <Button onClick={() => { this.handleClickEdit(item) }}>Редактировать</Button>
                             </Card.Body>

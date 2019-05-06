@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { getAllUsers, createStaff, updateStaff } from '../util/APIUtils';
-import { Modal, Form, Card, Button, Col, Row,InputGroup,FormControl } from 'react-bootstrap';
+import { getAllUsers, createStaff, updateUser } from '../util/APIUtils';
+import { Modal, Form, Card, Button, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 class UserList extends Component {
 
@@ -8,8 +8,8 @@ class UserList extends Component {
         super(props);
         console.log("This is UserList");
         this.state = {
-            staff: [],
-            staffs:[],
+            users: [],
+            usersfiltered: [],
             item: {
                 fio: '',
                 work: false,
@@ -28,7 +28,8 @@ class UserList extends Component {
         this.handleClickAddStaff = this.handleClickAddStaff.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.updateListStaff = this.updateListStaff.bind(this);
+        this.updateListUser = this.updateListUser.bind(this);
+        this.filterListByList = this.filterListByList.bind(this);
         this.handleShow = () => {
             this.setState({ show: true });
         };
@@ -42,8 +43,8 @@ class UserList extends Component {
             response => {
                 console.log(response);
                 this.setState({
-                    staff: response,
-                    staffs:response
+                    users: response,
+                    usersfiltered: response
                 })
             }
 
@@ -67,6 +68,7 @@ class UserList extends Component {
         const name = target.name;
         let item = { ...this.state.item };
         item[name] = value;
+        if (name==="roles") { item.roles=[]; item.roles.push(value);  }
         this.setState({ item });
     }
 
@@ -78,11 +80,12 @@ class UserList extends Component {
             isAdd: true,
             isEdit: false,
             item: {
-                fio: '',
-                work: false,
+                id:'',
+                name: '',
+                username: '',
                 adress: '',
-                place: '',
-                phone: ''
+                roles: [],
+                
             },
         })
         this.handleShow();
@@ -94,8 +97,9 @@ class UserList extends Component {
 
 
         if (this.state.isEdit) {
-            console.log("isEdit");
-            updateStaff(this.state.item).then(
+            console.log("isEdit",this.state.item);
+
+            updateUser(this.state.item).then(
                 response => {
                     toast.info('Данные успешно обновлены', {
                         position: "top-center",
@@ -106,7 +110,7 @@ class UserList extends Component {
                         draggable: true,
                         type: 'error'
                     });
-                    this.updateListStaff();
+                    this.updateListUser();
                     this.handleHide();
                 }
             ).catch(error => {
@@ -138,12 +142,11 @@ class UserList extends Component {
 
     }
 
-    updateListStaff() {
+    updateListUser() {
         console.log("Update Update Update");
         this.setState({ isLoading: true });
-
         getAllUsers().then(
-            response => this.setState({ staff: response,staffs:response, isLoading: false })
+            response => this.setState({ users: response, usersfiltered: response, isLoading: false })
         ).catch(error => {
             this.setState({
                 isLoading: false
@@ -153,67 +156,86 @@ class UserList extends Component {
 
 
     handleClickEdit(value) {
-
         this.setState({
             item: value,
             isEdit: true,
             isAdd: false,
         })
         this.handleShow();
-
     }
 
 
     filterList(event) {
-        var updatedList = this.state.staff;
+        var updatedList = this.state.users;
         updatedList = updatedList.filter(function (item) {
-            return item.fio.toLowerCase().search(
+            return item.name.toLowerCase().search(
                 event.target.value.toLowerCase()) !== -1;
         });
-        this.setState({ staffs: updatedList });
+        this.setState({ usersfiltered: updatedList });
+    }
+
+    filterListByList(event) {
+        var updatedList = this.state.users;
+        updatedList = updatedList.filter(function (item) {
+
+            return item.roles[0].toLowerCase().search(
+                event.target.value.toLowerCase()) !== -1;
+        });
+        this.setState({ usersfiltered: updatedList });
     }
 
 
     render() {
         const item = this.state.item;
+        let toReadRole = (value) => {
+            if (value === "ROLE_USER") return "Пользователь";
+            else
+                if (value === "ROLE_ADMIN") { return "Администратор" } else return "Водитель"
+        };
 
         const list = (
             <div>
-                 <InputGroup className="mb-3">
+                <InputGroup className="mb-3">
                     <InputGroup.Prepend>
                         <InputGroup.Text id="basic-addon1"></InputGroup.Text>
                     </InputGroup.Prepend>
                     <FormControl onChange={this.filterList}
-                        placeholder="Поиск по ФИО сотрудника"
-                        aria-label="Название продукта"
+                        placeholder="Поиск по ФИО пользователя"
+
                         aria-describedby="basic-addon1"
                     />
-                </InputGroup>   
+                </InputGroup>
 
-                {this.state.staffs.map((item) => (
+                <InputGroup className="mb-3">
+                    <InputGroup.Prepend>
+                        <InputGroup.Text id="basic-addon1">Фильтрация по тип пользователей</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <FormControl onChange={this.filterListByList} as="select" multiple={false}>
+                        <option value="ROLE_USER" >Пользователь</option>
+                        <option value="ROLE_ADMIN">Администратор</option>
+                        <option value="ROLE_DRIVER">Водитель</option>
+                        <option value="">Все</option>
+                    </FormControl>
+                </InputGroup>
+
+                {this.state.usersfiltered.map((item) => (
                     <div key={item.id}>
                         <br></br>
                         <Card>
-                            <Card.Title>{item.name}</Card.Title>
+
                             <Card.Body>
                                 <Card.Text>
-                                    ФИО сотрудника: {item.fio}
+                                    ФИО пользователя: {item.name}
                                 </Card.Text>
                                 <Card.Text>
-                                    Должность: {item.place}
-                                </Card.Text>
-                                <Card.Text>
-                                    Адрес: {item.adress}
-                                </Card.Text>
-                                <Card.Text>
-                                    Телефон: {item.phone}
+                                    Имя пользователя: {item.username}
                                 </Card.Text>
 
-                                <Form.Group controlId="work">
-                                    <Form.Label >Статус занятости</Form.Label>
-                                    <input type="checkbox"  value={item.work} ></input>
-                                </Form.Group>
-                                <Button onClick={() => { this.handleClickEdit(item) }}>Редактировать</Button>
+                                <Card.Text>
+                                    Тип пользователя: {toReadRole(item.roles[0])}
+                                </Card.Text>
+
+                                <Button onClick={() => { this.handleClickEdit(item) }}>Сменить тип пользователя</Button>
                             </Card.Body>
                         </Card>
                     </div>
@@ -238,50 +260,39 @@ class UserList extends Component {
                     <Modal.Body>
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group as={Row} controlId="name"  >
-                                <Form.Label column sm={2}>ФИО</Form.Label>
+                                <Form.Label column sm={2}>ФИО пользователя</Form.Label>
                                 <Col sm={10}>
-                                    <Form.Control placeholder="Фио сотрудника" name="fio" onChange={this.handleChange} value={item.fio || ''} />
+                                    <Form.Control name="name" onChange={this.handleChange} value={item.name || ''} />
                                 </Col>
                             </Form.Group>
-                            <Form.Group as={Row} controlId="place">
-                                <Form.Label column sm={2}>Должность</Form.Label>
+                            <Form.Group as={Row} controlId="username">
+                                <Form.Label column sm={2}>Имя пользователя</Form.Label>
                                 <Col sm={10}>
-                                    <Form.Control placeholder="Введите должность сотрудника" name="place" onChange={this.handleChange} value={item.place || ''} />
+                                    <Form.Control name="username" onChange={this.handleChange} value={item.username || ''} />
                                 </Col>
                             </Form.Group>
-                            <Form.Group as={Row} controlId="adress">
-                                <Form.Label column sm={2}>Адресс</Form.Label>
-                                <Col sm={10}>
-                                    <Form.Control placeholder="Введите адрес" onChange={this.handleChange} name="adress" value={item.adress || ''} />
+                            <Form.Group as={Row} controlId="roles">
+                                <Form.Label column sm={2}>Тип пользователя</Form.Label>
+                                <Col sm={10}>     
+                                    <FormControl onChange={this.handleChange} as="select" name="roles" multiple={false} value={item.roles || ''} >
+                                        <option value="ROLE_USER" >Пользователь</option>
+                                        <option value="ROLE_ADMIN">Администратор</option>
+                                        <option value="ROLE_DRIVER">Водитель</option>
+                                    </FormControl>
                                 </Col>
                             </Form.Group>
-                            <Form.Group as={Row} controlId="phone">
-                                <Form.Label column sm={2}>Телефон</Form.Label>
-                                <Col sm={10}>
-                                    <Form.Control rows="3" placeholder="Введите телефон" onChange={this.handleChange} name="phone" value={item.phone || ''} />
-                                </Col>
-                            </Form.Group>
-                            <Form.Group as={Row} controlId="work">
-                                <Form.Label column sm={2}>Статус занятости</Form.Label>
-                               
-                                <Col sm={10}>
-                                    <Form.Check rows="3" ref={item.work} placeholder="Введите телефон" onChange={this.handleChange} name="work"  />
-                                </Col>
-                            </Form.Group>
+
 
                             <Button type="submit">Сохранить</Button>
                         </Form>
                     </Modal.Body>
                 </Modal>
-                <Button onClick={this.handleClickAddStaff}>Добавить сотрудника</Button>
-                <h4>Cписок сотрудников</h4>
+
+                <h4>Cписок зарегистрированных пользователей</h4>
                 {list}
             </div>
         );
-
-
     }
-
 }
 
 export default UserList;

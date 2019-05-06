@@ -4,6 +4,7 @@ package com.voshodnerd.JWTtest.payload;
 import com.voshodnerd.JWTtest.model.Role;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,6 +13,7 @@ import java.util.Set;
 
 @Getter
 @Setter
+@ToString
 public class UserSummary {
     private Long id;
     private String username;

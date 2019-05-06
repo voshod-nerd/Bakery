@@ -146,6 +146,15 @@ export function getAllUsers() {
     });
 }
 
+export function updateUser(user) {
+    
+    return request({
+        url: API_BASE_URL + "/user/update",
+        method: 'PUT',
+        body: JSON.stringify(user)
+    });
+}
+
 
 
 export function updateGoods(goodsData) {
