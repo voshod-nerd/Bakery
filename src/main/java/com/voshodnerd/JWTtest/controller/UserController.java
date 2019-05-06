@@ -4,6 +4,7 @@
 package com.voshodnerd.JWTtest.controller;
 
 
+import com.voshodnerd.JWTtest.model.User;
 import com.voshodnerd.JWTtest.payload.UserIdentityAvailability;
 
 import com.voshodnerd.JWTtest.payload.UserSummary;
@@ -21,9 +22,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @RestController
@@ -32,6 +36,27 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+
+
+    @GetMapping("/user/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<UserSummary> getCurrentUser() {
+        List<User> lst = userRepository.findAll();
+        final List<UserSummary> result= new ArrayList<>();
+
+         lst.stream().forEach(value -> {
+
+            List<String> roles= new  ArrayList(value.getRoles().stream().map(v-> v.getName().name()).collect(Collectors.toList()));
+            UserSummary usr= new UserSummary(value.getId(),value.getUsername(),value.getName(),value.getAdress(),roles);
+            result.add(usr);
+
+        });
+
+       // List<String> roles= currentUser.getAuthorities().stream().map(x->((GrantedAuthority) x).getAuthority() ).collect(Collectors.toList());
+       // UserSummary userSummary = new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName(),currentUser.getAdress(),roles);
+        return result;
+    }
 
 
 

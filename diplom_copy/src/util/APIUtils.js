@@ -139,6 +139,14 @@ export function updateStaff(data) {
 }
 
 
+export function getAllUsers() {
+    return request({
+        url: API_BASE_URL + "/user/all",
+        method: 'GET'
+    });
+}
+
+
 
 export function updateGoods(goodsData) {
     

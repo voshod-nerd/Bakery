@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { getAllStaff, createStaff, updateStaff } from '../util/APIUtils';
+import { getAllUsers, createStaff, updateStaff } from '../util/APIUtils';
 import { Modal, Form, Card, Button, Col, Row,InputGroup,FormControl } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-class Staff extends Component {
+class UserList extends Component {
 
     constructor(props) {
         super(props);
-        console.log("This is Staff");
+        console.log("This is UserList");
         this.state = {
             staff: [],
             staffs:[],
@@ -24,7 +24,7 @@ class Staff extends Component {
         }
 
         this.filterList = this.filterList.bind(this);
-        this.getAllStaff = this.getAllStaff.bind(this);
+        this.getAllUsr = this.getAllUsr.bind(this);
         this.handleClickAddStaff = this.handleClickAddStaff.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -37,8 +37,8 @@ class Staff extends Component {
         };
     }
 
-    getAllStaff() {
-        getAllStaff().then(
+    getAllUsr() {
+        getAllUsers().then(
             response => {
                 console.log(response);
                 this.setState({
@@ -58,7 +58,7 @@ class Staff extends Component {
 
     componentDidMount() {
 
-        this.getAllStaff();
+        this.getAllUsr();
     }
 
     handleChange(event) {
@@ -142,7 +142,7 @@ class Staff extends Component {
         console.log("Update Update Update");
         this.setState({ isLoading: true });
 
-        getAllStaff().then(
+        getAllUsers().then(
             response => this.setState({ staff: response,staffs:response, isLoading: false })
         ).catch(error => {
             this.setState({
@@ -284,4 +284,4 @@ class Staff extends Component {
 
 }
 
-export default Staff;
+export default UserList;

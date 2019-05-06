@@ -4,6 +4,7 @@ import { getAllGoods, createGoods, updateGoods } from '../util/APIUtils';
 import { toast } from 'react-toastify';
 import OrderList from '../common/OrderList';
 import Staff from '../common/Staff';
+import UserList from '../common/UserList';
 
 
 class AdminPart extends Component {
@@ -263,6 +264,9 @@ class AdminPart extends Component {
                     </Tab>
                     <Tab eventKey="contact" title="Сотрудники" >
                           <Staff></Staff>
+                    </Tab>
+                    <Tab eventKey="users" title="Пользователи" >
+                    <UserList></UserList>
                     </Tab>
                 </Tabs> 
             </Container>

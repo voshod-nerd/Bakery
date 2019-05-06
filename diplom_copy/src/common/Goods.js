@@ -50,8 +50,6 @@ class Goods extends Component {
         });
     }
 
-
-
     handleClick(item) {
       
         item.uuid =  uuidv1() ;
@@ -129,11 +127,5 @@ class Goods extends Component {
         );
     }
 }
-
-
-
-
-
-
 
 export default connect(null, mapDispatchToProps)(Goods);;
