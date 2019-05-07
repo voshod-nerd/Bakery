@@ -155,6 +155,22 @@ export function updateUser(user) {
     });
 }
 
+export function createNotify(data) {
+    
+    return request({
+        url: API_BASE_URL + "/notify/add",
+        method: 'POST',
+        body: JSON.stringify(data)
+    });
+}
+export function getAllNotify() {
+    return request({
+        url: API_BASE_URL + "/notify/all",
+        method: 'GET'
+    });
+}
+
+
 
 
 export function updateGoods(goodsData) {

@@ -52,7 +52,7 @@ public class UserController {
          lst.stream().forEach(value -> {
 
             List<String> roles= new  ArrayList(value.getRoles().stream().map(v-> v.getName().name()).collect(Collectors.toList()));
-            UserSummary usr= new UserSummary(value.getId(),value.getUsername(),value.getName(),value.getAdress(),roles);
+            UserSummary usr= new UserSummary(value.getId(),value.getUsername(),value.getName(),value.getAdress(),value.getEmail(),roles);
             result.add(usr);
 
         });
@@ -87,7 +87,7 @@ public class UserController {
 
 
        List<String> roles= currentUser.getAuthorities().stream().map(x->((GrantedAuthority) x).getAuthority() ).collect(Collectors.toList());
-        UserSummary userSummary = new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName(),currentUser.getAdress(),roles);
+        UserSummary userSummary = new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName(),currentUser.getAdress(),currentUser.getEmail(),roles);
         return userSummary;
     }
 

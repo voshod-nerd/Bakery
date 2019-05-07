@@ -7,9 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 
 @Getter
 @Setter
@@ -19,14 +18,16 @@ public class UserSummary {
     private String username;
     private String name;
     private String adress;
+    private String email;
     private List<String> roles = new ArrayList<>();
 
-    public UserSummary(Long id, String username, String name,String adress,List<String> roles) {
+    public UserSummary(Long id, String username, String name,String address,String email,List<String> roles) {
         this.id = id;
         this.username = username;
         this.name = name;
         this.roles=roles;
-        this.adress=adress;
+        this.adress=address;
+        this.email=email;
     }
 
 

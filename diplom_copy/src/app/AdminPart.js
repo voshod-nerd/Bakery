@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import OrderList from '../common/OrderList';
 import Staff from '../common/Staff';
 import UserList from '../common/UserList';
+import Send from '../common/Send';
 
 
 class AdminPart extends Component {
@@ -267,6 +268,10 @@ class AdminPart extends Component {
                     </Tab>
                     <Tab eventKey="users" title="Пользователи" >
                     <UserList></UserList>
+                    </Tab>
+                   
+                    <Tab eventKey="send" title="Рассылки" >
+                    <Send></Send>
                     </Tab>
                 </Tabs> 
             </Container>
