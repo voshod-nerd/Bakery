@@ -18,7 +18,7 @@ public class AnotherBeanConfig {
         mailSender.setPort(587);
 
         mailSender.setUsername("nerdmail1990@gmail.com");
-        mailSender.setPassword("xeji srvh efsy qxel");
+        mailSender.setPassword("kboarztzatrzbqbw");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

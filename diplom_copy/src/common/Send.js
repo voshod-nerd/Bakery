@@ -39,10 +39,13 @@ class Send extends Component {
         }
 
         let lst = this.state.item.list.map((v) => { let el = getUserById(v); console.log(el); return el; });
-        console.log("lst", lst);
+        //console.log("lst", lst);
 
         let sendNotify = this.state.item;
+        console.log("LST",lst);
         sendNotify.list = lst;
+        console.log("Before sent",sendNotify);
+
         createNotify(sendNotify)
             .then(
                 response => {

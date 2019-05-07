@@ -11,14 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/notify")
@@ -37,14 +41,27 @@ public class NotifyController {
 
         for (UserSummary summary:notify.getList()) {
             System.out.println("Отправляю письма");
-            CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
-                SimpleMailMessage message = new SimpleMailMessage();
-                message.setTo(summary.getAdress());
-                message.setSubject(notify.getName());
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
 
-                mailSender.send(message);
-                return  "Message Sent";
+                try {
+                    MimeMessage message = mailSender.createMimeMessage();
+                    MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");
+                    messageHelper.setTo(summary.getEmail());
+                    messageHelper.setSubject(notify.getName());
+                    messageHelper.setText(notify.getCnt(),true);
+                    mailSender.send(message);
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                }
+
             });
+            try {
+            future.get(); } catch (InterruptedException er1 ) {
+                er1.printStackTrace();
+            }
+            catch ( ExecutionException er2) {
+                er2.printStackTrace();
+            }
         }
 
 
