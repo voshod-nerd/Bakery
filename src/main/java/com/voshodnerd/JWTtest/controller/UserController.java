@@ -41,6 +41,14 @@ public class UserController {
     @Autowired
     private RoleRepository roleRepository;
 
+    @GetMapping("/user/pureall")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<User> getPureUserList() {
+       // List<User> result = userRepository.findAllByRoleName("ROLE_USER").get();
+        List<User> result = userRepository.findAll();
+        return  result;
+    }
+
 
 
     @GetMapping("/user/all")

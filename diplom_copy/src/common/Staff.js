@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { getAllStaff, createStaff, updateStaff } from '../util/APIUtils';
-import { Modal, Form, Card, Button, Col, Row,InputGroup,FormControl } from 'react-bootstrap';
+import { getAllStaff, createStaff, updateStaff, getAllPureUsers } from '../util/APIUtils';
+import { Modal, Form, Card, Button, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 class Staff extends Component {
 
@@ -8,8 +8,9 @@ class Staff extends Component {
         super(props);
         console.log("This is Staff");
         this.state = {
+            users: [],
             staff: [],
-            staffs:[],
+            staffs: [],
             item: {
                 fio: '',
                 work: false,
@@ -29,6 +30,7 @@ class Staff extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.updateListStaff = this.updateListStaff.bind(this);
+        this.getAllUsers = this.getAllUsers.bind(this);
         this.handleShow = () => {
             this.setState({ show: true });
         };
@@ -43,7 +45,7 @@ class Staff extends Component {
                 console.log(response);
                 this.setState({
                     staff: response,
-                    staffs:response
+                    staffs: response
                 })
             }
 
@@ -56,9 +58,29 @@ class Staff extends Component {
     }
 
 
+    getAllUsers() {
+        getAllPureUsers().then(
+            response => {              
+                let onlyStaff = response.filter((v) => {
+                    if (v.roles[0].name !== "ROLE_USER") return v;
+                });
+                this.setState({
+                    users: onlyStaff,
+                })
+            }
+
+        ).catch(error => {
+            this.setState({
+                isLoading: false
+            });
+        });
+
+    }
+
     componentDidMount() {
 
         this.getAllStaff();
+        this.getAllUsers();
     }
 
     handleChange(event) {
@@ -143,7 +165,7 @@ class Staff extends Component {
         this.setState({ isLoading: true });
 
         getAllStaff().then(
-            response => this.setState({ staff: response,staffs:response, isLoading: false })
+            response => this.setState({ staff: response, staffs: response, isLoading: false })
         ).catch(error => {
             this.setState({
                 isLoading: false
@@ -179,7 +201,7 @@ class Staff extends Component {
 
         const list = (
             <div>
-                 <InputGroup className="mb-3">
+                <InputGroup className="mb-3">
                     <InputGroup.Prepend>
                         <InputGroup.Text id="basic-addon1"></InputGroup.Text>
                     </InputGroup.Prepend>
@@ -188,7 +210,7 @@ class Staff extends Component {
                         aria-label="Название продукта"
                         aria-describedby="basic-addon1"
                     />
-                </InputGroup>   
+                </InputGroup>
 
                 {this.state.staffs.map((item) => (
                     <div key={item.id}>
@@ -263,9 +285,9 @@ class Staff extends Component {
                             </Form.Group>
                             <Form.Group as={Row} controlId="work">
                                 <Form.Label column sm={2}>Статус занятости</Form.Label>
-                               
+
                                 <Col sm={10}>
-                                    <Form.Check rows="3" ref={item.work} placeholder="Введите телефон" onChange={this.handleChange} name="work"  />
+                                    <Form.Check rows="3" ref={item.work} placeholder="Введите телефон" onChange={this.handleChange} name="work" />
                                 </Col>
                             </Form.Group>
 

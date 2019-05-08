@@ -30,5 +30,9 @@ public class Staff {
     @JsonSerialize(using= NumericBooleanSerializer.class)
     @JsonDeserialize(using= NumericBooleanDeserializer.class)
     Boolean work;
+    @JoinColumn(name = "iduser", referencedColumnName = "id")
+    @ManyToOne
+    User iduser;
+
     
 }

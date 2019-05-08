@@ -139,6 +139,15 @@ export function updateStaff(data) {
 }
 
 
+
+export function getAllPureUsers() {
+    return request({
+        url: API_BASE_URL + "/user/pureall",
+        method: 'GET'
+    });
+}
+
+
 export function getAllUsers() {
     return request({
         url: API_BASE_URL + "/user/all",

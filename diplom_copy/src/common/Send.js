@@ -3,6 +3,9 @@ import { Editor } from '@tinymce/tinymce-react';
 import { getAllUsers, getAllNotify, createNotify } from '../util/APIUtils';
 import { Form, Button, InputGroup, FormControl } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+import renderHTML from 'react-render-html';
+
+
 class Send extends Component {
     constructor(props) {
         super(props);
@@ -11,6 +14,7 @@ class Send extends Component {
             content: '',
             users: [],
             message: '',
+            notifylist:[],
             item: {
                 id: '',
                 name: '',
@@ -24,9 +28,10 @@ class Send extends Component {
         this.getAllClient = this.getAllClient.bind(this);
         this.handleClickSend = this.handleClickSend.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.getNotifyList= this.getNotifyList.bind(this);
     }
     handleEditorChange(content) {
-        
+
         let item = { ...this.state.item };
         item['cnt'] = content;
         this.setState({ item });
@@ -34,17 +39,15 @@ class Send extends Component {
 
 
     handleClickSend() {
-        let getUserById = (id) => {  
+        let getUserById = (id) => {
             return this.state.users.find(v => v.id === parseInt(id));
         }
 
         let lst = this.state.item.list.map((v) => { let el = getUserById(v); console.log(el); return el; });
-        //console.log("lst", lst);
-
         let sendNotify = this.state.item;
-        console.log("LST",lst);
+        console.log("LST", lst);
         sendNotify.list = lst;
-        console.log("Before sent",sendNotify);
+        console.log("Before sent", sendNotify);
 
         createNotify(sendNotify)
             .then(
@@ -59,10 +62,12 @@ class Send extends Component {
                         type: 'error'
                     });
                     this.getAllClient();
+                    this.getNotifyList();
+
                 }
             )
             .catch(error => {
-               
+
                 toast.error('Создать рассылку не удалось', {
                     position: "top-center",
                     autoClose: false,
@@ -73,6 +78,20 @@ class Send extends Component {
                     type: 'error'
                 });
             });
+    }
+
+
+    getNotifyList() {
+        getAllNotify().then(
+            response => {
+                console.log("Notifylist",response);
+                this.setState({
+                    notifylist: response
+                })
+            }
+        ).catch(
+            error => { console.log(error); }
+        );
     }
 
     getAllClient() {
@@ -116,12 +135,28 @@ class Send extends Component {
 
     componentDidMount() {
         this.getAllClient();
+        this.getNotifyList();
     }
 
 
     render() {
 
         const list = this.state.users;
+        
+        const sendlist= this.state.notifylist.map((item) => (
+            <div key={item.id}>
+             <p>Название: {item.name}</p>
+            
+             <p>Дата рассылки {item.dtsend.substring(0,10)}</p>
+             <p>Содержание рассылки</p>
+             { renderHTML(item.cnt) }
+             <hr />
+            </div>
+          
+
+        ));
+
+
         return (
             <div>
                 <h3>Рассылки рекламный и акционных сообщений</h3>
@@ -155,7 +190,8 @@ class Send extends Component {
 
                 <hr />
                 <p>Прошлые рассылки</p>
-
+                <hr />
+               {sendlist}
 
             </div>
         );
