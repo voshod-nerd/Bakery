@@ -60,9 +60,10 @@ class Staff extends Component {
 
     getAllUsers() {
         getAllPureUsers().then(
-            response => {              
+            response => {
                 let onlyStaff = response.filter((v) => {
                     if (v.roles[0].name !== "ROLE_USER") return v;
+                    
                 });
                 this.setState({
                     users: onlyStaff,
@@ -88,7 +89,19 @@ class Staff extends Component {
         const value = target.value;
         const name = target.name;
         let item = { ...this.state.item };
+
+
         item[name] = value;
+        if (name === "iduser") {
+            let getUserById = (id) => {
+                return this.state.users.find(v => v.id === parseInt(id));
+            }
+            let user = getUserById(value);
+            item["iduser"] = user;
+
+        }
+        console.log("item=", item);
+
         this.setState({ item });
     }
 
@@ -230,11 +243,17 @@ class Staff extends Component {
                                 <Card.Text>
                                     Телефон: {item.phone}
                                 </Card.Text>
+                                <Card.Text>
+                                    Пользователь: {item.iduser!==null ? item.iduser.username:''}
+                                </Card.Text>
 
                                 <Form.Group controlId="work">
                                     <Form.Label >Статус занятости</Form.Label>
                                     <input type="checkbox" ></input>
                                 </Form.Group>
+
+
+
                                 <Button onClick={() => { this.handleClickEdit(item) }}>Редактировать</Button>
                             </Card.Body>
                         </Card>
@@ -283,6 +302,18 @@ class Staff extends Component {
                                     <Form.Control rows="3" placeholder="Введите телефон" onChange={this.handleChange} name="phone" value={item.phone || ''} />
                                 </Col>
                             </Form.Group>
+                            <Form.Group>
+                                <Form.Label column sm={2}>Пользователь</Form.Label>
+                                <Form.Control as="select" onChange={this.handleChange} name="iduser"  >
+                                    {
+                                        this.state.users.map((item) => (
+                                            <option key={item.id} value={item.id} >{item.username} {item.email}</option>
+
+                                        ))
+                                    }
+                                </Form.Control>
+                            </Form.Group>
+
                             <Form.Group as={Row} controlId="work">
                                 <Form.Label column sm={2}>Статус занятости</Form.Label>
 
@@ -290,6 +321,7 @@ class Staff extends Component {
                                     <Form.Check rows="3" ref={item.work} placeholder="Введите телефон" onChange={this.handleChange} name="work" />
                                 </Col>
                             </Form.Group>
+
 
                             <Button type="submit">Сохранить</Button>
                         </Form>

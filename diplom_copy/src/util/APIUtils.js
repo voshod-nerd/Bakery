@@ -98,6 +98,18 @@ export function createOrderItem(data) {
         body: JSON.stringify(data)
     });
 }
+
+export function updateOrder(data) {
+    
+    return request({
+        url: API_BASE_URL + "/order/update",
+        method: 'PUT',
+        body: JSON.stringify(data)
+    });
+}
+
+
+
 export function getAllOrders() {
     return request({
         url: API_BASE_URL + "/order/all",
@@ -108,6 +120,19 @@ export function getAllOrders() {
 export function getAllOrdersByDate(date) {
     return request({
         url: API_BASE_URL + "/order/by_date/"+date,
+        method: 'GET'
+    });
+}
+
+export function getAllPureOrdersByDate(date) {
+    return request({
+        url: API_BASE_URL + "/order/pure_by_date/"+date,
+        method: 'GET'
+    });
+}
+export function getOrderByDateAndStaff(date) {
+    return request({ 
+        url: API_BASE_URL + "/order/by_date_and_idstaff/"+date,
         method: 'GET'
     });
 }

@@ -14,6 +14,7 @@ import com.voshodnerd.JWTtest.repository.OrderRepository;
 import com.voshodnerd.JWTtest.repository.UserRepository;
 import com.voshodnerd.JWTtest.security.CurrentUser;
 import com.voshodnerd.JWTtest.security.UserPrincipal;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,6 +33,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/order")
+@Slf4j
 public class OrderRestController {
 
     @Autowired
@@ -99,6 +101,7 @@ public class OrderRestController {
             item.setDtorder(value.getDtorder());
             item.setNumber(value.getNumber());
             item.setIduser(value.getIduser());
+            item.setReady(value.getReady());
             item.setTotalprice(value.getTotalprice());
             List<ContentOrders> co= contentOrdersRepository.findAllByIdorder(value.getId()).get();
             List<ListGoods> lsGoods= new ArrayList<>();
@@ -125,6 +128,8 @@ public class OrderRestController {
     @GetMapping("/by_date/{strDate}")
     public List<OrderItem> getAllOrderByDate(@PathVariable String strDate)  {
 
+        System.out.println("This is by date"+strDate);
+
         Date date=new Date();
         try
         { date=new SimpleDateFormat("yyyy-MM-dd").parse(strDate); }
@@ -133,19 +138,21 @@ public class OrderRestController {
         }
         System.out.println("By date");
 
-        //System.out.println(orderRepository.findByAllByDtorder(date).get().size());
+
         Optional<List<Order>> result =  orderRepository.findByAllByDtorder(date);
         List<Order> lstOrder= result.isPresent()?result.get(): new ArrayList<Order>();
 
-        //List<Order> lstOrder=  orderRepository.findByAllByDtorder(date).isPresent()?  orderRepository.findByAllByDtorder(date).get();
+
         final List<OrderItem>  ls = new ArrayList<>();
 
         lstOrder.forEach((value) -> {
             OrderItem item =new OrderItem();
             item.setId(value.getId());
+            item.setIdstaff(value.getIdstaff());
             item.setDtorder(value.getDtorder());
             item.setNumber(value.getNumber());
             item.setIduser(value.getIduser());
+            item.setReady(value.getReady());
             item.setTotalprice(value.getTotalprice());
             List<ContentOrders> co= contentOrdersRepository.findAllByIdorder(value.getId()).get();
             List<ListGoods> lsGoods= new ArrayList<>();
@@ -163,6 +170,87 @@ public class OrderRestController {
             item.setListGoods(lsGoods);
             ls.add(item);
         } );
+        return ls;
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/pure_by_date/{strDate}")
+    public List<Order> getAllPureOrderByDate(@PathVariable String strDate)  {
+
+        Date date=new Date();
+        try
+        { date=new SimpleDateFormat("yyyy-MM-dd").parse(strDate); }
+        catch (ParseException exception) {
+            System.out.println(exception.getMessage());
+        }
+        System.out.println("By date");
+
+
+        Optional<List<Order>> result =  orderRepository.findByAllByDtorder(date);
+
+        return result.get();
+    }
+
+
+    @PutMapping("/update")
+    public ResponseEntity<OrderItem> updateOrderItem(@Valid @RequestBody OrderItem orderItem) {
+        log.info("Request to update order idStaff:",orderItem );
+        Order order= orderRepository.findById(orderItem.getId()).get();
+        order.setIdstaff(orderItem.getIdstaff());
+        Order newOrder = orderRepository.save(order);
+        return ResponseEntity.ok().body(orderItem);
+
+
+    }
+
+
+    @PreAuthorize("hasRole('DRIVER')")
+    @GetMapping("/by_date_and_idstaff/{dt}")
+    public List<OrderItem> getOrderByDateForDriver(@CurrentUser UserPrincipal currentUser,@PathVariable String dt)  {
+
+        Date date=new Date();
+        try
+        { date=new SimpleDateFormat("yyyy-MM-dd").parse(dt); }
+        catch (ParseException exception) {
+            System.out.println(exception.getMessage());
+        }
+        System.out.println("By date");
+
+
+        System.out.println("idUser="+currentUser.getId()+" dt="+date.toString());
+        Optional<List<Order>> result =  orderRepository.findByDtorderAndIdstaff(currentUser.getId(),date);
+      //  System.out.println(result.get().size());
+        List<Order> lstOrder= result.isPresent()?result.get(): new ArrayList<Order>();
+        final List<OrderItem>  ls = new ArrayList<>();
+        lstOrder.forEach((value) -> {
+            OrderItem item =new OrderItem();
+            item.setId(value.getId());
+            item.setIdstaff(value.getIdstaff());
+            item.setDtorder(value.getDtorder());
+            item.setNumber(value.getNumber());
+            item.setIduser(value.getIduser());
+            item.setTotalprice(value.getTotalprice());
+            item.setReady(value.getReady());
+
+            Optional<List<ContentOrders>> res= contentOrdersRepository.findAllByIdorder(value.getId());
+            List<ContentOrders> co= res.isPresent() ? res.get(): new ArrayList<ContentOrders>();
+
+            List<ListGoods> lsGoods= new ArrayList<>();
+            for (ContentOrders v: co) {
+                ListGoods goods = new ListGoods();
+                goods.setId(v.getIdgoods().getId());
+                goods.setActual(v.getIdgoods().getActual());
+                goods.setName(v.getIdgoods().getName());
+                goods.setPrice(v.getIdgoods().getPrice());
+                goods.setWeight(v.getIdgoods().getWeight());
+                goods.setCount(v.getCount());
+                goods.toString();
+                lsGoods.add(goods);
+            }
+            item.setListGoods(lsGoods);
+            ls.add(item);
+        } );
+
         return ls;
     }
 

@@ -3,9 +3,8 @@ package com.voshodnerd.JWTtest.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
+
 
 
 @Data
@@ -26,12 +25,8 @@ public class Order {
   @JoinColumn(name = "iduser", referencedColumnName = "id")
   @ManyToOne
   User iduser;
-  /*@OneToMany(
-          cascade = CascadeType.ALL,
-          orphanRemoval = true
-  )
-  @JoinColumn(name = "idorder")
-  List<ContentOrders> listContentOrder;
+  @JoinColumn(name = "idstaff", referencedColumnName = "id")
+  @ManyToOne
+  Staff idstaff;
 
-   */
 }

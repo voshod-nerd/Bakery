@@ -45,7 +45,7 @@ class MainHeader extends Component {
             if (this.props.user.roles[0] === "ROLE_DRIVER") {
                 menuItems = [
                  
-                    <Link to='/list'><Navbar.Brand key='listmarshrut'>Маршрутный лист</Navbar.Brand></Link>,
+                    
                     <Navbar.Brand key='logout' href="#" onClick={this.handleLogoutClick} >Выйти</Navbar.Brand>
                    
                 ];

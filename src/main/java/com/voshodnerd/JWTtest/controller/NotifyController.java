@@ -9,7 +9,6 @@ import com.voshodnerd.JWTtest.repository.NotifyRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +19,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -37,6 +37,7 @@ public class NotifyController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createNewNotify(@Valid @RequestBody Notify notify) {
         System.out.println(notify);
+        notify.setDtsend(new Date());
         Notify newNotify = notifyRepository.save(notify);
 
         for (UserSummary summary:notify.getList()) {

@@ -17,6 +17,13 @@ public interface OrderRepository  extends JpaRepository<Order, Long> {
 
     @Query(value ="SELECT * FROM orders  WHERE dtorder = ?1",nativeQuery = true)
     Optional<List<Order>> findByAllByDtorder(Date dtorder);
+
+
+
+
+    @Query(value ="select * from orders WHERE idstaff in (\n" +
+            "  select id from staff WHERE iduser=?1) and dtorder=?2",nativeQuery = true)
+    Optional<List<Order>> findByDtorderAndIdstaff(Long iduser,Date dt);
 }
 
 
