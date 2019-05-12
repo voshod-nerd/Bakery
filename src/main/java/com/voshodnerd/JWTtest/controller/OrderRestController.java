@@ -154,7 +154,11 @@ public class OrderRestController {
             item.setIduser(value.getIduser());
             item.setReady(value.getReady());
             item.setTotalprice(value.getTotalprice());
-            List<ContentOrders> co= contentOrdersRepository.findAllByIdorder(value.getId()).get();
+
+            //List<ContentOrders> co= contentOrdersRepository.findAllByIdorder(value.getId()).get();
+            Optional<List<ContentOrders>> res= contentOrdersRepository.findAllByIdorder(value.getId());
+            List<ContentOrders> co= res.isPresent() ? res.get(): new ArrayList<ContentOrders>();
+
             List<ListGoods> lsGoods= new ArrayList<>();
             for (ContentOrders v: co) {
                 ListGoods goods = new ListGoods();
@@ -197,10 +201,9 @@ public class OrderRestController {
         log.info("Request to update order idStaff:",orderItem );
         Order order= orderRepository.findById(orderItem.getId()).get();
         order.setIdstaff(orderItem.getIdstaff());
+        order.setReady(orderItem.getReady());
         Order newOrder = orderRepository.save(order);
         return ResponseEntity.ok().body(orderItem);
-
-
     }
 
 
