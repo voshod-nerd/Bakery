@@ -108,23 +108,23 @@ class Signup extends Component {
             <div >
                 <p> Введите данные для регистрации</p>
                 <Form onSubmit={this.handleSubmit} >
-                    <Form.Group controlId="formBasicName">
+                    <Form.Group controlId="name">
                         <Form.Label>ФИО пользователя</Form.Label>
                         <Form.Control type="text" name="name" placeholder="Введите имя" value={this.state.name.value} onChange={(event) => this.handleInputChange(event, this.validateName)} />
                     </Form.Group>
-                    <Form.Group controlId="formBasicUserName">
+                    <Form.Group controlId="username">
                         <Form.Label>Логин</Form.Label>
                         <FormControl.Feedback type={(this.state.username.validateStatus === 'error') ? "error" : "valid"} >Имя пользователя занято</FormControl.Feedback>
                         <Form.Control value={this.state.username.value} isValid={this.state.username.validateStatus === 'success'} isInvalid={this.state.username.validateStatus === 'error'} onBlur={this.validateUsernameAvailability} name="username" onChange={(event) => this.handleInputChange(event, this.validateUsername)} type="text" placeholder="Введите имя пользователя" />
                     </Form.Group>
-                    <Form.Group controlId="formAdress">
+                    <Form.Group controlId="adress">
                         <Form.Label>Адрес</Form.Label>
                        
-                        <Form.Control value={this.state.adress.value}  name="adress" onChange={(event) => this.handleInputChange(event, this.validateUsername)} type="text" placeholder="Введите адрес доставки" />
+                        <Form.Control value={this.state.adress.value}  name="adress" onChange={(event) => this.handleInputChange(event, this.validateUsername)} type="text" placeholder="Введите адрес для  доставки" />
                     </Form.Group>
 
 
-                    <Form.Group controlId="formBasicEmail"  >
+                    <Form.Group controlId="email"  >
                         <Form.Label>Адрес электронной почты</Form.Label>
                         <FormControl.Feedback type={(this.state.email.validateStatus === 'error') ? "error" : "valid"} >Адрес электронной почты занят</FormControl.Feedback>
                         <Form.Control isValid={this.state.email.validateStatus === 'success'} isInvalid={this.state.email.validateStatus === 'error'} name="email" onBlur={this.validateEmailAvailability} value={this.state.email.value} onChange={(event) => this.handleInputChange(event, this.validateEmail)} type="email" placeholder="Введите адрес электронной почты" />
@@ -133,7 +133,9 @@ class Signup extends Component {
                     </Form.Text>
                     </Form.Group>
 
-                    <Form.Group controlId="formBasicPassword">
+                    
+
+                    <Form.Group controlId="password">
                         <Form.Label>Пароль</Form.Label>
                         <FormControl.Feedback type={(this.state.password.validateStatus === 'error') ? "error" : "valid"} >{this.state.password.errorMsg}</FormControl.Feedback>
                         <Form.Control value={this.state.password.value} name="password" onChange={(event) => this.handleInputChange(event, this.validatePassword)} type="password" placeholder="Пароль" />

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Tabs, Tab, Breadcrumb, ButtonGroup, Button,  Table, Modal, Col, Row,  Form, Container } from "react-bootstrap";
 import { getAllGoods, createGoods, updateGoods } from '../util/APIUtils';
 import { toast } from 'react-toastify';
-import OrderList from '../common/OrderList';
+import AdminOrderList from '../common/AdminOrderList';
 import Staff from '../common/Staff';
 import UserList from '../common/UserList';
 import Send from '../common/Send';
@@ -261,7 +261,7 @@ class AdminPart extends Component {
                         </Table>
                     </Tab>
                     <Tab eventKey="profile" title="Заказы">
-                        <OrderList></OrderList>
+                        <AdminOrderList></AdminOrderList>
                     </Tab>
                     <Tab eventKey="contact" title="Сотрудники" >
                           <Staff></Staff>

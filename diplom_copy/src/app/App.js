@@ -22,7 +22,7 @@ import DriverPart from './DriverPart';
 import AdminPart from './AdminPart';
 import Goods from '../common/Goods';
 import ShopList from '../common/ShopList';
-import ListOrders from '../common/ListOrders';
+import UserOrdersList from '../common/UserOrdersList';
 function mapDispatchToProps(dispatch) {
   return {
     loginUser: user => dispatch(loginUser(user)),
@@ -127,7 +127,7 @@ class Apps extends Component {
             <Route path="/goods"
               render={(props) => <Goods  {...props} />}></Route>
             <Route path="/orders"
-              render={(props) => <ListOrders  {...props} />}></Route>
+              render={(props) => <UserOrdersList  {...props} />}></Route>
             <Route path="/login"
               render={(props) => <Login onLogin={this.handleLogin} {...props} />}></Route>
             <Route path="/signup" component={Signup}></Route>

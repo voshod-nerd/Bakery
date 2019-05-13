@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Table, Form } from 'react-bootstrap';
 import { getAllOrders } from '../util/APIUtils';
 
-class ListOrders extends Component {
+class UserOrdersList extends Component {
 
     constructor(props) {
         super(props);
@@ -93,4 +93,4 @@ class ListOrders extends Component {
     }
 
 }
-export default ListOrders;
+export default UserOrdersList;

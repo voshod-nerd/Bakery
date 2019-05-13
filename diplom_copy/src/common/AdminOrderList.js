@@ -3,8 +3,9 @@ import { Form, Button, Modal, Col, Row } from 'react-bootstrap';
 import { getAllOrdersByDate,  updateOrder, getAllStaff } from '../util/APIUtils';
 import './index.css';
 import { toast } from 'react-toastify';
+import { isForOfStatement } from '@babel/types';
 
-class OrderList extends Component {
+class AdminOrderList extends Component {
 
 
     constructor(props) {
@@ -145,14 +146,28 @@ class OrderList extends Component {
     }
 
 
-
-
-
     render() {
+
+
+         const Red = {
+            backgroundColor: '#D58199'
+          }
+          const Ordinary = {
+            backgroundColor: '#D8D8DC'
+          }          
+
+       let isOff = (item) => {
+           let date=new Date(item.dtorder);
+           let curDate= new Date();
+           date.setHours(0,0,0,0);
+           curDate.setHours(0,0,0,0);
+           if ((item.ready===false) && (date.getTime()<curDate.getTime())) return true; 
+           else return false;
+        } 
+
         let content = [];
         if (this.state.isLoading === true) {
             const list = this.state.data;
-            console.log(list);
             content = [
                 <table >
                     <thead>
@@ -162,29 +177,28 @@ class OrderList extends Component {
                             <th>Адрес доставки</th>
                             <th>Наименование товара и количество</th>
                             <th>Исполнитель</th>
+                            <th>Статус заказа</th>
                         </tr>
                     </thead>
                     <tbody>
                         {list.map((el, index) => (
-                            <tr key={"ind" + el.number}>
+                            <tr key={"ind" + el.number}  style={ isOff(el) ? Red:Ordinary } >
                                 <td >{el.number}</td>
                                 <td >{el.iduser.name}</td>
                                 <td >{el.iduser.adress}</td>
-
-
                                 <td>
                                     <ul >
                                         {el.listGoods.map((v, ind) => (
                                             <li key={"xe" + ind} >{v.name} - {v.count} </li>
                                         ))}
                                     </ul>
-
                                 </td>
                                 <td>
                                     {el.idstaff !== undefined ? el.idstaff.fio + ' ' + el.idstaff.place : ""}
                                     <br></br>
                                     <Button onClick={() => { this.handleClickEdit(el) }}>Изменить исполнителя</Button>
                                 </td>
+                                <td >{el.ready === false ? "В работе" : "Исполнено"}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -217,28 +231,22 @@ class OrderList extends Component {
                                         {
                                             this.state.staff.map((item) => (
                                                 <option key={item.id} value={item.id} >ФИО сотрудника: {item.fio} Должность: {item.place}</option>
-
                                             ))
                                         }
                                     </Form.Control>
-
                                 </Col>
                             </Form.Group>
-
-
                             <Button type="submit">Сохранить</Button>
                         </Form>
                     </Modal.Body>
                 </Modal>
-
-
                 <Form>
                     <Form.Group controlId="choosedDate">
                         <Form.Label>Выберете дату </Form.Label>
                         <Form.Control onChange={this.handleChange} name="choosedDate" type="date" placeholder="Enter email" />
-
                     </Form.Group>
                     <Button onClick={this.handleClickShow} >Показать список заказов</Button>
+                    <hr></hr>
                     {content}
                 </Form>
             </div>
@@ -246,4 +254,4 @@ class OrderList extends Component {
     }
 }
 
-export default OrderList;
+export default AdminOrderList;

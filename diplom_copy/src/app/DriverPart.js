@@ -15,7 +15,7 @@ class DriverPart extends Component {
     render() {
         return (
             <div >
-                <p>Это часть водителя</p>
+                <p>Модуль водителя экспедитора</p>
                 <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example">
                     <Tab eventKey="home" title="Задания на сегодня">
                      <RouteList></RouteList>
