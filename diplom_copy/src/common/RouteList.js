@@ -2,10 +2,12 @@ import React, { Component } from 'react'
 import { Form, Button, Modal, Col, Row } from 'react-bootstrap'
 import { getOrderByDateAndStaff, updateOrder } from '../util/APIUtils';
 import { toast } from 'react-toastify';
-import { Document, Page, Text, View, StyleSheet, PDFViewer } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, PDFViewer, List, Font } from '@react-pdf/renderer';
+import logo from "./fonts/arial.ttf";
+import  "./css/index.css";
 
 
-
+Font.register({ family: 'Roboto', src: logo });
 const styles = StyleSheet.create({
     page: {
         flexDirection: "row"
@@ -13,73 +15,78 @@ const styles = StyleSheet.create({
     section: {
         flexGrow: 1
     },
+    title: {
+        fontSize: 24,
+        textAlign: 'center',
+        fontFamily: 'Roboto',
+    },
+    subtitle: {
+        fontSize: 16,
+        margin: 12,
+        fontFamily: 'Roboto',
+    },
+    lefthh3: {
+        fontSize: 10,
+        textAlign: 'left',
+        marginBottom: 5,
+        fontFamily: 'Roboto',
+    },
     table: { display: "table", width: "auto", borderStyle: "solid", borderWidth: 1, borderRightWidth: 0, borderBottomWidth: 0 },
     tableRow: { margin: "auto", flexDirection: "row" },
-    tableCol: { width: "25%", borderStyle: "solid", borderWidth: 1, borderLeftWidth: 1, borderTopWidth: 0 },
-    tableCell: { margin: "auto", marginTop: 5, fontSize: 10 }
+    tableCol: { width: "15%", borderStyle: "solid", borderWidth: 1, borderLeftWidth: 1, borderTopWidth: 0 },
+    tableCell: { margin: "auto", marginTop: 1, fontSize: 8, fontFamily: "Roboto" }
 });
 
-const MyDocument = () => (
+const MyDocument = (data) => (
     <Document>
+        {console.log("Data=", data)}
         <Page size="A4" style={styles.page}>
             <View style={styles.section}>
+                <Text style={styles.title}>Маршрутный лист</Text>
+                <Text style={styles.lefthh3}>Фамилия Имя Отчество: {data.value[0].idstaff.fio}</Text>
+                <Text style={styles.lefthh3}>Должность: Водитель</Text>
                 <View style={styles.table}>
                     <View style={styles.tableRow}>
                         <View style={styles.tableCol}>
-                            <Text style={styles.tableCell}>Product</Text>
+                            <Text style={styles.tableCell}>Номер заказа</Text>
                         </View>
                         <View style={styles.tableCol}>
-                            <Text style={styles.tableCell}>Product</Text>
+                            <Text style={styles.tableCell}>ФИО клиента</Text>
                         </View>
                         <View style={styles.tableCol}>
-                            <Text style={styles.tableCell}>{'Hello'}</Text>
-                        </View>
-                    </View>
-                    <View style={styles.tableRow}>
-                        <View style={styles.tableCol}>
-                            <Text style={styles.tableCell}>Product</Text>
+                            <Text style={styles.tableCell}>Адрес доставки</Text>
                         </View>
                         <View style={styles.tableCol}>
-                            <Text style={styles.tableCell}>Product</Text>
+                            <Text style={styles.tableCell}>Статус заказа</Text>
                         </View>
                         <View style={styles.tableCol}>
-                            <Text style={styles.tableCell}>Product</Text>
-                        </View>
-                    </View>
-                    <View style={styles.tableRow}>
-                        <View style={styles.tableCol}>
-                            <Text style={styles.tableCell}>Product</Text>
-                        </View>
-                        <View style={styles.tableCol}>
-                            <Text style={styles.tableCell}>Product</Text>
-                        </View>
-                        <View style={styles.tableCol}>
-                            <Text style={styles.tableCell}>Product</Text>
-                        </View>
-                    </View>
-                    <View style={styles.tableRow}>
-                        <View style={styles.tableCol}>
-                            <Text style={styles.tableCell}>Product</Text>
-                        </View>
-                        <View style={styles.tableCol}>
-                            <Text style={styles.tableCell}>Product</Text>
-                        </View>
-                        <View style={styles.tableCol}>
-                            <Text style={styles.tableCell}>Product</Text>
-                        </View>
-                    </View>
-                    <View style={styles.tableRow}>
-                        <View style={styles.tableCol}>
-                            <Text style={styles.tableCell}>Product</Text>
-                        </View>
-                        <View style={styles.tableCol}>
-                            <Text style={styles.tableCell}>Product</Text>
-                        </View>
-                        <View style={styles.tableCol}>
-                            <Text style={styles.tableCell}>Product</Text>
+                            <Text style={styles.tableCell}>Содержимое заказа</Text>
                         </View>
                     </View>
 
+
+                    {data.value.map((el, index) => (
+                        <View key={"ind=" + index} style={styles.tableRow}>
+                            <View style={styles.tableCol}>
+                                <Text style={styles.tableCell}>{el.number}</Text>
+                            </View>
+                            <View style={styles.tableCol}>
+                                <Text style={styles.tableCell}>{el.iduser.name}</Text>
+                            </View>
+                            <View style={styles.tableCol}>
+                                <Text style={styles.tableCell}>{el.iduser.adress}</Text>
+                            </View>
+
+                            <View style={styles.tableCol}>
+                                <Text style={styles.tableCell}>{el.ready === false ? "В работе" : "Исполнено"}</Text>
+                            </View>
+                            <View style={styles.tableCol}>
+                                {el.listGoods.map((v, ind) => (
+                                    <Text key={"xe" + ind} style={styles.tableCell}> {v.name} - {v.count}</Text>
+                                ))}
+                            </View>
+                        </View>
+                    ))}
                 </View>
             </View>
         </Page>
@@ -169,9 +176,6 @@ class RouteList extends Component {
             console.log(error);
         });
     }
-
-
-
 
     handleClickShow() {
         getOrderByDateAndStaff(this.state.curDate).then(
@@ -267,6 +271,9 @@ class RouteList extends Component {
                 </div>];
         }
 
+        let modalPdf = [];
+        if (this.state.data.length > 0) modalPdf = [<PDFViewer key="pdf" height="700" width="900" ><MyDocument value={this.state.data} ></MyDocument></PDFViewer>]
+
         let modal = [
             <div key="hiddenPart">
                 <Modal key="modal"
@@ -287,9 +294,7 @@ class RouteList extends Component {
                                     <Form.Control as="select" onChange={this.handleChangeReady} name="ready"  >
                                         <option value="false">В работе</option>
                                         <option value="true">Исполнено</option>
-
                                     </Form.Control>
-
                                 </Col>
                             </Form.Group>
 
@@ -297,13 +302,15 @@ class RouteList extends Component {
                             <Button type="submit">Сохранить</Button>
                         </Form>
                     </Modal.Body>
+
                 </Modal>
+
                 <Modal key="modalPDF"
-                    size="lg"
+                    dialogClassName="modal-1050w"
                     show={this.state.showPdf}
                     onHide={this.handleHidePDF}
-                    dialogClassName="modal-90w"
-                    aria-labelledby="example-custom-modal-styling-title"
+                   
+                    
                 >
                     <Modal.Header closeButton>
                         <Modal.Title id="example-custom-modal-styling-title">
@@ -311,24 +318,20 @@ class RouteList extends Component {
              </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                   
+                        {modalPdf}
                     </Modal.Body>
                 </Modal>
             </div>
         ];
 
-        let modalPdf = [
+       
 
-
-        ];
         return (
             <div >
                 <p></p>
                 {modal}
-                {modalPdf}
+
                 <h4>Список заказов</h4>
-
-
 
                 <Form>
                     <Form.Label>Выбранная дата {this.state.curDate.substring(0, 10)} </Form.Label>
@@ -342,7 +345,7 @@ class RouteList extends Component {
                     <Form.Label> Данные на выбранную дату  </Form.Label>
                     {content}
                 </Form>
-                <PDFViewer><MyDocument></MyDocument></PDFViewer>
+              
             </div>
         );
     }
