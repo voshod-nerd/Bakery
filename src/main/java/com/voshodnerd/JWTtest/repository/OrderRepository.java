@@ -11,6 +11,9 @@ import java.util.Optional;
 
 @Repository
 public interface OrderRepository  extends JpaRepository<Order, Long> {
+    @Query(value ="SELECT * FROM orders ",nativeQuery = true)
+    Optional<List<Order>> findAllOrders();
+
     Optional<Order> findById(Order order);
     @Query(value ="SELECT * FROM orders  WHERE iduser = ?1",nativeQuery = true)
     Optional<List<Order>> findByAllByUserId(Long order);

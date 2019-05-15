@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Form, Button, Modal, Col, Row } from 'react-bootstrap'
 import { getOrderByDateAndStaff, updateOrder } from '../util/APIUtils';
 import { toast } from 'react-toastify';
-import { Document, Page, Text, View, StyleSheet, PDFViewer, List, Font } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, PDFViewer, Font } from '@react-pdf/renderer';
 import logo from "./fonts/arial.ttf";
 import  "./css/index.css";
 
@@ -15,8 +15,13 @@ const styles = StyleSheet.create({
     section: {
         flexGrow: 1
     },
+    body: {
+        paddingTop: 35,
+        paddingBottom: 45,
+        paddingHorizontal: 35,
+    },
     title: {
-        fontSize: 24,
+        fontSize: 18,
         textAlign: 'center',
         fontFamily: 'Roboto',
     },
@@ -33,54 +38,54 @@ const styles = StyleSheet.create({
     },
     table: { display: "table", width: "auto", borderStyle: "solid", borderWidth: 1, borderRightWidth: 0, borderBottomWidth: 0 },
     tableRow: { margin: "auto", flexDirection: "row" },
-    tableCol: { width: "15%", borderStyle: "solid", borderWidth: 1, borderLeftWidth: 1, borderTopWidth: 0 },
+    tableCol: { width: "20%", borderStyle: "solid", borderWidth: 1, borderLeftWidth: 1, borderTopWidth: 0 },
+    tableColLittle: { width: "12.5%", borderStyle: "solid", borderWidth: 1, borderLeftWidth: 1, borderTopWidth: 0 },
+    tableColBig: { width: "25%", borderStyle: "solid", borderWidth: 1, borderLeftWidth: 1, borderTopWidth: 0 },
     tableCell: { margin: "auto", marginTop: 1, fontSize: 8, fontFamily: "Roboto" }
 });
 
 const MyDocument = (data) => (
     <Document>
         {console.log("Data=", data)}
-        <Page size="A4" style={styles.page}>
+        <Page size="A4"  style={styles.body}>
             <View style={styles.section}>
                 <Text style={styles.title}>Маршрутный лист</Text>
                 <Text style={styles.lefthh3}>Фамилия Имя Отчество: {data.value[0].idstaff.fio}</Text>
                 <Text style={styles.lefthh3}>Должность: Водитель</Text>
                 <View style={styles.table}>
                     <View style={styles.tableRow}>
-                        <View style={styles.tableCol}>
+                        <View style={styles.tableColLittle}>
                             <Text style={styles.tableCell}>Номер заказа</Text>
                         </View>
-                        <View style={styles.tableCol}>
+                        <View style={styles.tableColBig}>
                             <Text style={styles.tableCell}>ФИО клиента</Text>
                         </View>
-                        <View style={styles.tableCol}>
+                        <View style={styles.tableColBig}>
                             <Text style={styles.tableCell}>Адрес доставки</Text>
                         </View>
-                        <View style={styles.tableCol}>
+                        <View style={styles.tableColLittle}>
                             <Text style={styles.tableCell}>Статус заказа</Text>
                         </View>
-                        <View style={styles.tableCol}>
+                        <View style={styles.tableColBig}>
                             <Text style={styles.tableCell}>Содержимое заказа</Text>
                         </View>
                     </View>
-
-
                     {data.value.map((el, index) => (
                         <View key={"ind=" + index} style={styles.tableRow}>
-                            <View style={styles.tableCol}>
+                            <View style={styles.tableColLittle}>
                                 <Text style={styles.tableCell}>{el.number}</Text>
                             </View>
-                            <View style={styles.tableCol}>
+                            <View style={styles.tableColBig}>
                                 <Text style={styles.tableCell}>{el.iduser.name}</Text>
                             </View>
-                            <View style={styles.tableCol}>
+                            <View style={styles.tableColBig}>
                                 <Text style={styles.tableCell}>{el.iduser.adress}</Text>
                             </View>
 
-                            <View style={styles.tableCol}>
+                            <View style={styles.tableColLittle}>
                                 <Text style={styles.tableCell}>{el.ready === false ? "В работе" : "Исполнено"}</Text>
                             </View>
-                            <View style={styles.tableCol}>
+                            <View style={styles.tableColBig}>
                                 {el.listGoods.map((v, ind) => (
                                     <Text key={"xe" + ind} style={styles.tableCell}> {v.name} - {v.count}</Text>
                                 ))}
@@ -236,7 +241,6 @@ class RouteList extends Component {
                                 <th>Адрес доставки</th>
                                 <th>Cтатус заказа</th>
                                 <th>Наименование товара и количество</th>
-
                                 <th>Исполнитель</th>
                             </tr>
                         </thead>
@@ -272,7 +276,7 @@ class RouteList extends Component {
         }
 
         let modalPdf = [];
-        if (this.state.data.length > 0) modalPdf = [<PDFViewer key="pdf" height="700" width="900" ><MyDocument value={this.state.data} ></MyDocument></PDFViewer>]
+        if (this.state.data.length > 0) modalPdf = [<PDFViewer key="pdf" height="700" width="770" ><MyDocument value={this.state.data} ></MyDocument></PDFViewer>]
 
         let modal = [
             <div key="hiddenPart">
@@ -306,12 +310,9 @@ class RouteList extends Component {
                 </Modal>
 
                 <Modal key="modalPDF"
-                    dialogClassName="modal-1050w"
+                   size="lg"
                     show={this.state.showPdf}
-                    onHide={this.handleHidePDF}
-                   
-                    
-                >
+                    onHide={this.handleHidePDF} >
                     <Modal.Header closeButton>
                         <Modal.Title id="example-custom-modal-styling-title">
                             Cформированный маршрутный лист

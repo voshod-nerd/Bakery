@@ -6,7 +6,7 @@ import AdminOrderList from '../common/AdminOrderList';
 import Staff from '../common/Staff';
 import UserList from '../common/UserList';
 import Send from '../common/Send';
-
+import Report from '../common/Report';
 
 class AdminPart extends Component {
     constructor(props) {
@@ -272,6 +272,9 @@ class AdminPart extends Component {
                    
                     <Tab eventKey="send" title="Рассылки" >
                     <Send></Send>
+                    </Tab>
+                    <Tab eventKey="report" title="Отчеты" >
+                    <Report></Report>
                     </Tab>
                 </Tabs> 
             </Container>

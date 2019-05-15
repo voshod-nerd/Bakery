@@ -110,6 +110,13 @@ export function updateOrder(data) {
 
 
 
+export function getAllOrdersByUser() {
+    return request({
+        url: API_BASE_URL + "/order/allbyuser",
+        method: 'GET'
+    });
+}
+
 export function getAllOrders() {
     return request({
         url: API_BASE_URL + "/order/all",

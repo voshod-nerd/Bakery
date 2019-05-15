@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Table, Form, Modal, Button } from 'react-bootstrap';
-import { getAllOrders } from '../util/APIUtils';
+import { getAllOrdersByUser } from '../util/APIUtils';
 import { Document, Page, Text, View, StyleSheet, PDFViewer, List, Font } from '@react-pdf/renderer';
 import logo from "./fonts/arial.ttf";
 
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto',
     },
     subtitle: {
-        fontSize: 16,
+        fontSize: 14,
         textAlign: 'center',
         margin: 12,
         fontFamily: 'Roboto',
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     },
     table: { display: "table", width: "auto", borderStyle: "solid", borderWidth: 1, borderRightWidth: 0, borderBottomWidth: 0 },
     tableRow: { margin: "auto", flexDirection: "row" },
-    tableCol: { width: "15%", borderStyle: "solid", borderWidth: 1, borderLeftWidth: 1, borderTopWidth: 0 },
+    tableCol: { width: "20%", borderStyle: "solid", borderWidth: 1, borderLeftWidth: 0, borderTopWidth: 0 },
     tableCell: { margin: "auto", marginTop: 1, fontSize: 8, fontFamily: "Roboto" }
 });
 
@@ -74,6 +74,13 @@ const RednerPDF = (data) => (
                 <Text style={styles.lefthh3}>3.4. Указанный в п.п. 5.1 - 5.2 настоящего договора заказ Покупателя может быть сделан как письменно, в том числе по факсу или по электронной почте, так и по телефону.</Text>
                 <Text style={styles.lefthh3}>3.5. Обязательства Поставщика по поставке Товара считаются выполненными с момента передачи Товара уполномоченному представителю Покупателя или перевозчику груза по железной дороге, автотранспортом, авиа- или речным транспортом, что подтверждается датой, указанной в товарно - транспортной накладной</Text>
                 <Text style={styles.lefthh3}>3.6. Упаковка Товара должна обеспечивать его сохранность при транспортировке при условии бережного с ним обращения.</Text>
+                <Text style={styles.subtitle}></Text>
+                <Text style={styles.subtitle}></Text>
+                
+
+                <Text style={styles.subtitle}>4 ЗАКЛЮЧИТЕЛЬНЫЕ ПОЛОЖЕНИЯ</Text>
+                <Text style={styles.lefthh3}>4.1. Настоящий договор составлен в двух экземплярах, имеющих одинаковую юридическую силу, по одному экземпляру для каждой из сторон.</Text>
+                <Text style={styles.lefthh3}>4.2. Любые изменения и дополнения к настоящему договору действительны при условии, если они совершены в письменной форме, подписаны надлежаще уполномоченными на то представителями сторон и скреплены печатями</Text>
             </View>
         </Page>
         <Page size="A4" style={styles.body} key="2" wrap>
@@ -118,11 +125,14 @@ const RednerPDF = (data) => (
                             <View style={styles.tableCol}>
                                 <Text style={styles.tableCell}>{el.count}</Text>
                             </View>
-
-
                         </View>
                     ))}
                 </View>
+                <Text style={styles.lefthh3}></Text>
+                <Text style={styles.lefthh3}></Text>
+                <Text style={styles.lefthh3}></Text>
+                <Text style={styles.lefthh3}>Поставщик: ИП Анар Кенжеева</Text>
+                <Text style={styles.lefthh3}>Покупатель: {data.value.iduser.name}</Text>
                 </View>
             </View>
         </Page>
@@ -152,7 +162,7 @@ class UserOrdersList extends Component {
 
 
     componentDidMount() {
-        getAllOrders().then(
+        getAllOrdersByUser().then(
             response => {
                 this.setState({
                     listOrders: response
@@ -167,11 +177,11 @@ class UserOrdersList extends Component {
     render() {
 
         let modalPdf = [];
-        if (this.state.listOrders.length > 0) modalPdf = [<PDFViewer key="pdf" height="700" width="900" ><RednerPDF value={this.state.item} ></RednerPDF></PDFViewer>]
+        if (this.state.listOrders.length > 0) modalPdf = [<PDFViewer key="pdf" height="700" width="770" ><RednerPDF value={this.state.item} ></RednerPDF></PDFViewer>]
 
         let modal = [
             <Modal key="modalPDF"
-                dialogClassName="modal-1050w"
+                size="lg"
                 show={this.state.showPdf}
                 onHide={this.handleHidePDF} >
                 <Modal.Header closeButton>

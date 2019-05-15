@@ -87,12 +87,51 @@ public class OrderRestController {
     }
 
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value="/all",method = RequestMethod.GET)
-    public List<OrderItem> getAllOrder(@CurrentUser UserPrincipal currentUser) {
+    public List<OrderItem> getAllOrder() {
+
+        Optional<List<Order>> result=  orderRepository.findAllOrders();
+        List<Order> lstOrder= result.isPresent()?result.get(): new ArrayList<>();
+        final List<OrderItem>  ls = new ArrayList<>();
+
+        lstOrder.forEach((value) -> {
+            OrderItem item =new OrderItem();
+            item.setId(value.getId());
+            item.setDtorder(value.getDtorder());
+            item.setNumber(value.getNumber());
+            item.setIduser(value.getIduser());
+            item.setReady(value.getReady());
+            item.setTotalprice(value.getTotalprice());
+            List<ContentOrders> co= contentOrdersRepository.findAllByIdorder(value.getId()).get();
+            List<ListGoods> lsGoods= new ArrayList<>();
+            for (ContentOrders v: co) {
+                ListGoods goods = new ListGoods();
+                goods.setId(v.getIdgoods().getId());
+                goods.setActual(v.getIdgoods().getActual());
+                goods.setName(v.getIdgoods().getName());
+                goods.setPrice(v.getIdgoods().getPrice());
+                goods.setWeight(v.getIdgoods().getWeight());
+                goods.setCount(v.getCount());
+                goods.toString();
+                lsGoods.add(goods);
+            }
+            item.setListGoods(lsGoods);
+            ls.add(item);
+
+
+        } );
+        return ls;
+    }
+
+
+    @PreAuthorize("hasRole('USER')")
+    @RequestMapping(value="/allbyuser",method = RequestMethod.GET)
+    public List<OrderItem> getAllOrderByUser(@CurrentUser UserPrincipal currentUser) {
         System.out.println("Username");
         System.out.println(currentUser.getUsername());
-        List<Order> lstOrder= orderRepository.findByAllByUserId(currentUser.getId()).get();
+        Optional<List<Order>> result= orderRepository.findByAllByUserId(currentUser.getId());
+        List<Order> lstOrder= result.isPresent()?result.get(): new ArrayList<>();
         final List<OrderItem>  ls = new ArrayList<>();
 
         lstOrder.forEach((value) -> {
